@@ -9,6 +9,8 @@ module.exports = {
       colors: {
         // You can add more colors here.
         sky: colors.sky,
+        rose: colors.rose,
+        teal: colors.teal,
       },
     },
   },
