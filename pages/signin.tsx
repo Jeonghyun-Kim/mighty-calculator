@@ -1,16 +1,34 @@
-import { FormEventHandler, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import NextImage from 'next/image';
+import useSWR from 'swr';
+import cookie from 'cookie';
 
 import { LockClosedIcon } from '@heroicons/react/outline';
-import { Button } from '@components/ui';
+import { Button, Link } from '@components/ui';
 import { signinWithEmail, SigninWithEmailProps } from '@lib/signin-with-email';
 import { useSession } from '@lib/hooks/use-session';
 import { useUI } from '@components/context';
+import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
+import { isBrowser } from '@utils/is-browser';
+
+export function useEmail() {
+  const { data: email, mutate: setEmail } = useSWR('email', {
+    fetcher: undefined,
+    initialData: '',
+  });
+
+  return [email || '', setEmail] as const;
+}
 
 export default function SinginPage() {
-  const { mutate } = useSession({ redirectTo: '/dashboard', redirectIfFound: true });
+  const { mutate } = useSession({
+    redirectTo:
+      (isBrowser() && cookie.parse(document.cookie)[COOKIE_KEY_REDIRECT_URL]) || '/dashboard',
+    redirectIfFound: true,
+  });
 
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
+  const [email, setEmail] = useEmail();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +42,7 @@ export default function SinginPage() {
 
         mutate();
       } catch (err) {
-        showNoti({ variant: 'alert', title: err.name, content: err.message });
+        showNoti({ variant: 'alert', title: err.name, content: err.message }, 10);
       } finally {
         setLoading(false);
       }
@@ -50,7 +68,6 @@ export default function SinginPage() {
             requestSignin({ email, password });
           }}
         >
-          <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email-address" className="sr-only">
@@ -78,6 +95,7 @@ export default function SinginPage() {
                 type="password"
                 autoComplete="current-password"
                 required
+                maxLength={30}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md sm:text-sm"
                 placeholder="Password"
                 value={password}
@@ -86,33 +104,29 @@ export default function SinginPage() {
             </div>
           </div>
 
-          {/* <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-medium text-teal-600 hover:text-teal-500">
-                Forgot your password?
-              </a>
-            </div>
-          </div> */}
-
           <div>
-            <Button type="submit" full className="relative" disabled={loading}>
+            <Button type="submit" full className="relative capitalize" disabled={loading}>
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 <LockClosedIcon className="h-5 w-5 text-white" aria-hidden="true" />
               </span>
               Sign in
             </Button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <Link href="/signup" className="font-medium text-teal-600 hover:text-teal-500">
+                Create Account
+              </Link>
+            </div>
+            <div className="text-sm">
+              <a
+                href="mailto:kimjh@bwai.org"
+                className="font-medium text-teal-600 hover:text-teal-500"
+              >
+                Forgot your password?
+              </a>
+            </div>
           </div>
         </form>
       </div>

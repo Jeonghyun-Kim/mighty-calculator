@@ -18,14 +18,17 @@ export default function ProfilePage() {
     if (user) setDisplayName(user.displayName);
   }, [user]);
 
-  const handleUpdateDisplayName = useCallback(() => {
-    if (!displayName || loadingFlags.displayName) return;
-    setLoadingFlags((prev) => ({ ...prev, displayName: true }));
-    updateDisplayName(displayName)
-      .then(() => mutate())
-      .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
-      .finally(() => setLoadingFlags((prev) => ({ ...prev, displayName: false })));
-  }, [loadingFlags.displayName, displayName, mutate, showNoti]);
+  const handleUpdateDisplayName = useCallback(
+    (displayName: string) => {
+      if (!displayName || loadingFlags.displayName) return;
+      setLoadingFlags((prev) => ({ ...prev, displayName: true }));
+      updateDisplayName(displayName)
+        .then(() => mutate())
+        .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+        .finally(() => setLoadingFlags((prev) => ({ ...prev, displayName: false })));
+    },
+    [loadingFlags.displayName, mutate, showNoti],
+  );
 
   if (!user || displayName === null) return <Loading />;
 
@@ -48,7 +51,7 @@ export default function ProfilePage() {
           </a>
           &nbsp;if you want to change this field.
         </p>
-        <div className="mt-4 grid grid-cols-12 gap-6">
+        <form className="mt-4 grid grid-cols-12 gap-6">
           <div className="col-span-12 sm:col-span-6">
             <label htmlFor="full-name" className="text-sm font-medium text-gray-700 hidden">
               Full name
@@ -63,11 +66,11 @@ export default function ProfilePage() {
             />
           </div>
           <div className="col-span-12 sm:col-span-6 flex justify-end">
-            <Button disabled size="sm">
+            <Button type="submit" disabled size="sm">
               Save
             </Button>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* name section */}
@@ -77,7 +80,13 @@ export default function ProfilePage() {
           This could be your first name, or a nickname - however you&apos;d like people to refer to
           you in Mighty Network 23rd.
         </p>
-        <div className="mt-4 grid grid-cols-12 gap-6">
+        <form
+          className="mt-4 grid grid-cols-12 gap-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleUpdateDisplayName(displayName);
+          }}
+        >
           <div className="col-span-12 sm:col-span-6">
             <label htmlFor="displayName" className="text-sm font-medium text-gray-700 hidden">
               Display Name
@@ -93,14 +102,14 @@ export default function ProfilePage() {
           </div>
           <div className="col-span-12 sm:col-span-6 flex justify-end">
             <Button
+              type="submit"
               disabled={user.displayName === displayName.trim() || displayName.trim().length < 2}
               size="sm"
-              onClick={handleUpdateDisplayName}
             >
               Save
             </Button>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* TODO: add profile picture section */}

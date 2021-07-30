@@ -41,9 +41,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const exUser = await db.collection<User>('user').findOne({ email });
 
     if (exUser) {
-      if (exUser.approvedAt) return res.status(400).json(createError('USER_ALREADY_EXISTS'));
+      return res.status(400).json(createError('USER_ALREADY_EXISTS'));
+    }
 
-      return res.status(304).end();
+    if (displayName) {
+      const exDisplayName = await db.collection<User>('user').findOne({ displayName });
+
+      if (exDisplayName) return res.status(400).json(createError('DISPLAYNAME_CONFLICT'));
     }
 
     await db.collection<User>('user').insertOne({
@@ -70,9 +74,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { displayName } = (await bodySchema.validateAsync(req.body)) as { displayName: string };
 
     const { db } = await connectMongo();
+
+    const user = await db.collection<User>('user').findOne({ _id: userId });
+    if (!user) throw new Error('Cannot find user.');
+
+    if (displayName === user.displayName) {
+      return res.status(304).end();
+    }
+
+    const exUser = await db.collection<User>('user').findOne({ displayName });
+    if (exUser) {
+      return res.status(400).json(createError('DISPLAYNAME_CONFLICT'));
+    }
     await db
       .collection<User>('user')
-      .updateOne({ _id: userId }, { $set: { displayName, updatedAt: new Date() } });
+      .updateOne({ _id: user._id }, { $set: { displayName, updatedAt: new Date() } });
 
     return res.status(204).end();
   }

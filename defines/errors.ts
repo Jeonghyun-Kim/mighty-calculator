@@ -88,6 +88,12 @@ const ERRORS = {
     name: 'Wrong password',
     message: 'Try another one.',
   },
+  UNAPPROVED_USER: {
+    code: 'AE005',
+    name: 'Unapproved user',
+    message:
+      'Admin needs to approve your signup request. It usually takes 3~5 days, but you can contact the admin personally if reachable.',
+  },
   MISSING_ADMIN_KEY: {
     code: 'AE101',
     name: 'Missing admin key',
@@ -104,6 +110,11 @@ const ERRORS = {
     code: 'KE001',
     name: 'User already exists',
     message: 'Try signin instead.',
+  },
+  DISPLAYNAME_CONFLICT: {
+    code: 'KE002',
+    name: 'DisplayName conflicts',
+    message: 'The requested displayName already exists.',
   },
 
   // External Error

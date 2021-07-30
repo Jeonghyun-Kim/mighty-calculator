@@ -42,9 +42,14 @@ export function useSession({
   useEffect(() => {
     if (!user && !error) return;
 
-    if (user && redirectIfFound) {
-      router.replace(redirectTo ?? (cookie.parse(document.cookie)[COOKIE_KEY_REDIRECT_URL] || '/'));
-    } else if (!user && redirectTo && !redirectIfFound) {
+    if (user && !error && redirectIfFound) {
+      router
+        .replace(redirectTo ?? (cookie.parse(document.cookie)[COOKIE_KEY_REDIRECT_URL] || '/'))
+        .then(() => {
+          document.cookie = `${COOKIE_KEY_REDIRECT_URL}=; Path=/`;
+        });
+    } else if ((!user || error) && redirectTo && !redirectIfFound) {
+      console.log('redirect!!! to', redirectTo);
       if (savePath) {
         document.cookie = `${COOKIE_KEY_REDIRECT_URL}=${router.asPath}; Path=/`;
       }

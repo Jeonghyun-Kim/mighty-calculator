@@ -9,7 +9,7 @@ interface ModalProps {
   title: string;
   content: string;
   close: () => void;
-  cancelButton: {
+  cancelButton?: {
     label: string;
     onClick: () => void;
   };
@@ -40,7 +40,7 @@ export default function Modal({
         open={show}
         onClose={() => {}}
       >
-        <div className="flex items-center justify-center min-h-screen pt-32 text-center sm:block sm:p-0">
+        <div className="flex items-center justify-center min-h-screen pt-32 px-4 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -98,8 +98,9 @@ export default function Modal({
               </div>
               <div
                 className={cn('mt-5', {
-                  'sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense':
-                    variant === 'default',
+                  'sm:mt-6': variant === 'default',
+                  'sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense':
+                    variant === 'default' && cancelButton,
                   'sm:mt-4 sm:flex sm:flex-row-reverse': variant === 'alert',
                 })}
               >
@@ -108,7 +109,7 @@ export default function Modal({
                   className={cn(
                     'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:text-sm',
                     {
-                      'bg-blue-400 hover:bg-lightBlue-500 sm:col-start-2': variant === 'default',
+                      'bg-teal-400 hover:bg-teal-500 sm:col-start-2': variant === 'default',
                       'bg-red-600 hover:bg-red-700 focus-visible:ring-red-500 sm:ml-3 sm:w-auto':
                         variant === 'alert',
                     },

@@ -31,13 +31,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     >;
 
     const { db } = await connectMongo();
-    const exUser = await db.collection<User>('user').findOne({ email, approvedAt: { $ne: null } });
+    const exUser = await db.collection<User>('user').findOne({ email });
 
     if (!exUser) return res.status(401).json(createError('NO_SUCH_USER'));
 
     if (!(await bcrypt.compare(password, exUser.password))) {
       return res.status(401).json(createError('WRONG_PASSWORD'));
     }
+
+    if (!exUser.approvedAt) return res.status(401).json(createError('UNAPPROVED_USER'));
 
     const accessToken = signToken({ userId: exUser._id }, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
     res.setHeader('Set-Cookie', [

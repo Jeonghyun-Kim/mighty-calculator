@@ -14,7 +14,7 @@ interface ModalContent {
     label: string;
     onClick: () => void;
   };
-  cancelButton: {
+  cancelButton?: {
     label: string;
     onClick: () => void;
   };
@@ -42,7 +42,6 @@ const initialState: State = {
     title: '',
     content: '',
     actionButton: { label: '확인', onClick: () => {} },
-    cancelButton: { label: '취소', onClick: () => {} },
   },
 };
 
@@ -154,15 +153,7 @@ export const UIProvider: FC = ({ ...props }) => {
     if (storedState)
       setState({
         ...JSON.parse(storedState),
-        notiFlag: false,
-        notiContent: { variant: 'default', title: '', content: '' },
-        modalFlag: false,
-        modalContent: {
-          title: '',
-          content: '',
-          actionButton: { label: '확인', onClick: () => {} },
-          cancelButton: { label: '취소', onClick: () => {} },
-        },
+        ...initialState,
         muted: true,
       });
   }, []);
