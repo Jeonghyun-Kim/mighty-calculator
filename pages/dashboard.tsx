@@ -1,7 +1,8 @@
 import Loading from '@components/core/Loading';
+import { DashboardLayout } from '@components/layout';
 import { useSession } from '@lib/hooks/use-session';
 
-export default function IndexPage() {
+export default function DashboardPage() {
   const { user } = useSession({ redirectTo: '/signin' });
 
   if (!user) return <Loading />;
@@ -13,3 +14,5 @@ export default function IndexPage() {
     </div>
   );
 }
+
+DashboardPage.Layout = DashboardLayout;

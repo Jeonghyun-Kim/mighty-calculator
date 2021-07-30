@@ -7,7 +7,11 @@ export async function fetcher<T = any>(url: string, init?: RequestInit): Promise
       throw await response.text();
     }
 
-    throw await response.json();
+    const error = await response.json();
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error);
+    }
+    throw error;
   }
 
   const contentType = response.headers.get('Content-Type');

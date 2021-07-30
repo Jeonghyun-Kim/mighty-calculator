@@ -35,11 +35,10 @@ export function useSession({
     error,
   } = useSWR<UserInfo>('/api/user', {
     refreshInterval: 30000,
-    revalidateOnFocus: false,
+    // revalidateOnFocus: false,
     shouldRetryOnError: false,
   });
 
-  console.log(user);
   useEffect(() => {
     if (!user && !error) return;
 

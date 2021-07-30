@@ -7,7 +7,7 @@ export default function IndexPage() {
   useSession({ redirectTo: '/dashboard', redirectIfFound: true });
 
   return (
-    <div className="max-w-screen-lg mx-auto py-8">
+    <div className="max-w-screen-lg mx-auto py-8 px-4 sm:px-6">
       <h1 className="font-mono text-xl font-medium tracking-tighter">
         Mighty Network Score Calculator for SSHS 23rd
       </h1>
@@ -17,7 +17,7 @@ export default function IndexPage() {
           Kay Kim
         </a>
       </p>
-      <div className="mt-12">
+      <div className="mt-4 sm:mt-6 lg:mt-12">
         <NextLink href="/signin" passHref>
           <Button as="a" color="white">
             Sign in

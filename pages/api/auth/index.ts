@@ -9,11 +9,7 @@ import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
 import { signToken } from '@utils/jsonwebtoken';
 import { ACCESS_TOKEN_EXPIRES_IN } from '@defines/token';
-import {
-  COOKIE_KEY_ACCESS_TOKEN,
-  COOKIE_KEY_REDIRECT_URL,
-  defaultCookieOptions,
-} from '@defines/cookie';
+import { COOKIE_KEY_ACCESS_TOKEN, defaultCookieOptions } from '@defines/cookie';
 
 import { User } from 'types/user';
 

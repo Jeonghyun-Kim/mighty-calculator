@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .collection<User>('user')
       .findOne<UserInfo>(
         { _id: userId },
-        { projection: { _id: 1, name: 1, email: 1, profileUrl: 1 } },
+        { projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1 } },
       );
 
     if (!user) throw new Error('Cannot find user.');
@@ -27,15 +27,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'POST') {
     const userSchema = Joi.object({
-      name: Joi.string().label('name').min(3).max(10).required(),
-      email: Joi.string().label('email').email().required(),
-      password: Joi.string().label('password').min(8).max(30).required(),
-    });
+      name: Joi.string().min(3).max(10).required(),
+      displayName: Joi.string().min(3).max(20),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).max(30).required(),
+    }).prefs({ errors: { label: 'key' } });
 
-    const { name, email, password } = (await userSchema.validateAsync(req.body)) as Pick<
-      User,
-      'name' | 'email' | 'password'
-    >;
+    const { name, displayName, email, password } = (await userSchema.validateAsync(
+      req.body,
+    )) as Pick<User, 'name' | 'displayName' | 'email' | 'password'>;
 
     const { db } = await connectMongo();
     const exUser = await db.collection<User>('user').findOne({ email });
@@ -48,6 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await db.collection<User>('user').insertOne({
       name,
+      displayName: displayName || '',
       email,
       profileUrl: null,
       password: await bcrypt.hash(password, SALT_ROUND),
@@ -57,6 +58,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     return res.status(201).end();
+  }
+
+  if (req.method === 'PATCH') {
+    const { userId } = verifySession(req, res);
+
+    const bodySchema = Joi.object({
+      displayName: Joi.string().label('displayName').min(2).max(20).required(),
+    });
+
+    const { displayName } = (await bodySchema.validateAsync(req.body)) as { displayName: string };
+
+    const { db } = await connectMongo();
+    await db
+      .collection<User>('user')
+      .updateOne({ _id: userId }, { $set: { displayName, updatedAt: new Date() } });
+
+    return res.status(204).end();
   }
 };
 

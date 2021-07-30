@@ -1,22 +1,23 @@
-import { useUI } from '../context';
+import cn from 'classnames';
 
+import { useUI } from '@components/context';
 import { Modal, Notification } from '@components/ui';
 
-export default function CommonLayout({ children }: { children: React.ReactNode }) {
-  const { modalFlag, modalContent, notiFlag, closeNoti, notiContent } = useUI();
+export default function CommonLayout({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const { modalFlag, modalContent, notiFlag, closeModal, closeNoti, notiContent } = useUI();
 
   return (
     <div className="relative min-h-full w-full">
-      <main className="relative">{children}</main>
-      <Modal show={modalFlag} {...modalContent} />
+      <main className={cn(className, 'relative')}>{children}</main>
 
-      <Notification
-        show={notiFlag}
-        close={() => closeNoti()}
-        variant={notiContent.variant}
-        title={notiContent.title}
-        content={notiContent.content}
-      />
+      <Modal show={modalFlag} close={closeModal} {...modalContent} />
+      <Notification show={notiFlag} close={closeNoti} {...notiContent} />
     </div>
   );
 }

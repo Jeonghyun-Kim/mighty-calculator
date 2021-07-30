@@ -22,6 +22,8 @@ NProgress.configure({
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
+  const Layout = (Component as any).Layout || CommonLayout;
+
   useEffect(() => {
     router.events.on('routeChangeStart', NProgress.start);
     router.events.on('routeChangeComplete', NProgress.done);
@@ -39,9 +41,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Script src="/js/redirectIE.js" strategy="beforeInteractive" />
       <SWRConfig value={{ fetcher }}>
         <ManagedUIContext>
-          <CommonLayout>
+          <Layout>
             <Component {...pageProps} />
-          </CommonLayout>
+          </Layout>
         </ManagedUIContext>
       </SWRConfig>
     </>

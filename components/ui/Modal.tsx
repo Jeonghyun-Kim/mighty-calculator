@@ -8,6 +8,7 @@ interface ModalProps {
   variant?: 'default' | 'alert';
   title: string;
   content: string;
+  close: () => void;
   cancelButton: {
     label: string;
     onClick: () => void;
@@ -23,6 +24,7 @@ export default function Modal({
   variant = 'default',
   title,
   content,
+  close,
   cancelButton,
   actionButton,
 }: ModalProps) {
@@ -113,6 +115,7 @@ export default function Modal({
                   )}
                   onClick={() => {
                     actionButton.onClick();
+                    close();
                   }}
                 >
                   {actionButton.label}
@@ -129,6 +132,7 @@ export default function Modal({
                     )}
                     onClick={() => {
                       cancelButton.onClick();
+                      close();
                     }}
                   >
                     {cancelButton.label}
