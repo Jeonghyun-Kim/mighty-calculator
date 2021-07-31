@@ -8,6 +8,14 @@ export type __ = typeof __;
 
 export type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
+export type Unwrap<T> = T extends Promise<infer U>
+  ? U
+  : T extends (...args: any) => Promise<infer U>
+  ? U
+  : T extends (...args: any) => infer U
+  ? U
+  : T;
+
 export type PropsOf<TTag = any> = TTag extends ElementType ? ComponentProps<TTag> : never;
 
 type PropsWeControl = 'as' | 'children' | 'refName' | 'className';

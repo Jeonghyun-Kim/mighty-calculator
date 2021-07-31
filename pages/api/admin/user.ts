@@ -10,6 +10,19 @@ import { createError } from '@defines/errors';
 import { User } from 'types/user';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === 'GET') {
+    verifyAdminKey(req, res);
+
+    const { db } = await connectMongo();
+    const users = await db
+      .collection<User>('user')
+      .find({ approvedAt: null }, { projection: { password: 0 } })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return res.json({ users });
+  }
+
   if (req.method === 'POST') {
     verifyAdminKey(req, res);
 
