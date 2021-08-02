@@ -73,7 +73,7 @@ export default function ProfilePage() {
         </form>
       </div>
 
-      {/* name section */}
+      {/* displayName section */}
       <div className="mt-8 p-4 border border-gray-200 rounded-lg">
         <h4 className="text-lg font-medium text-gray-700">Display Name</h4>
         <p className="mt-1.5 text-sm text-gray-500">
@@ -103,7 +103,11 @@ export default function ProfilePage() {
           <div className="col-span-12 sm:col-span-6 flex justify-end">
             <Button
               type="submit"
-              disabled={user.displayName === displayName.trim() || displayName.trim().length < 2}
+              disabled={
+                loadingFlags.displayName ||
+                user.displayName === displayName.trim() ||
+                displayName.trim().length < 2
+              }
               size="sm"
             >
               Save

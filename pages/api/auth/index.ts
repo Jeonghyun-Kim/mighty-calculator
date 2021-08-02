@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { serialize } from 'cookie';
 
 import { withErrorHandler } from '@utils/with-error-handler';
-import { verifySession } from '@lib/verify-session';
+import { verifySession } from '@lib/server/verify-session';
 import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
 import { signToken } from '@utils/jsonwebtoken';

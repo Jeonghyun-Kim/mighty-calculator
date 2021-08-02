@@ -6,10 +6,11 @@ import { useUI } from '@components/context';
 import { Button } from '@components/ui';
 import { getSignupRequests } from '@lib/get-signup-requests';
 import { useSession } from '@lib/hooks/use-session';
-
-import { Unwrap } from 'types';
 import Loading from '@components/core/Loading';
 import { approveSignupRequest } from '@lib/approve-signup-request';
+import { momentDate } from '@utils/moment';
+
+import { Unwrap } from 'types';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -94,12 +95,17 @@ export default function AdminPage() {
       </form>
 
       {users === null ? (
+        // Initial state. (without adminKey)
         <div className="mt-8">Enter the Admin Key first.</div>
       ) : (
         <div className="mt-8">
           <h4>Singup Request List</h4>
           {loadingFlags.list ? (
+            // Fetching singup request list
             <Loading />
+          ) : users.length === 0 ? (
+            // Emtpy request list
+            <p className="mt-4 font-medium text-lg">There&apos;s no pending signup request.</p>
           ) : (
             <div className="mt-2 -mb-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -125,13 +131,19 @@ export default function AdminPage() {
                         >
                           Email
                         </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Requested At
+                        </th>
                         <th scope="col" className="relative px-6 py-3">
                           <span className="sr-only">Approve</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {users.map(({ _id, name, displayName, email }, userIdx) => (
+                      {users.map(({ _id, name, displayName, email, createdAt }, userIdx) => (
                         <tr
                           key={_id as string}
                           className={userIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
@@ -144,6 +156,9 @@ export default function AdminPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {email}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {momentDate(createdAt).fromNow()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button

@@ -116,6 +116,21 @@ const ERRORS = {
     name: 'DisplayName conflicts',
     message: 'The requested displayName already exists.',
   },
+  NO_SUCH_ROOM: {
+    code: 'KE101',
+    name: 'No such room',
+    message: 'Check the requested roomId',
+  },
+  ROOM_ENDED: {
+    code: 'KE102',
+    name: 'Room ended',
+    message: 'You cannot add games to the ended room.',
+  },
+  NO_SUCH_GAME: {
+    code: 'KE201',
+    name: 'No such game',
+    message: 'Check the requested gameId',
+  },
 
   // External Error
   AWS_ERROR: {

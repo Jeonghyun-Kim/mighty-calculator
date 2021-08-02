@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
 import { withErrorHandler } from '@utils/with-error-handler';
-import { verifyAdminKey } from '@lib/verify-admin-key';
+import { verifyAdminKey } from '@lib/server/verify-admin-key';
 import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
 

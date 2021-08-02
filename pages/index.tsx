@@ -2,6 +2,7 @@ import NextLink from 'next/link';
 
 import { Button } from '@components/ui';
 import { useSession } from '@lib/hooks/use-session';
+import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
 
 export default function IndexPage() {
   useSession({ redirectTo: '/dashboard', redirectIfFound: true });
@@ -19,7 +20,11 @@ export default function IndexPage() {
       </p>
       <div className="mt-4 sm:mt-6 lg:mt-12">
         <NextLink href="/signin" passHref>
-          <Button as="a" color="white">
+          <Button
+            as="a"
+            color="white"
+            onClick={() => (document.cookie = `${COOKIE_KEY_REDIRECT_URL}=/dashboard; Path=/`)}
+          >
             Sign in
           </Button>
         </NextLink>

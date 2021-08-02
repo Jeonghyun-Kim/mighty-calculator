@@ -2,10 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
 import { withErrorHandler } from '@utils/with-error-handler';
-import { verifySession } from '@lib/verify-session';
+import { verifySession } from '@lib/server/verify-session';
 import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
-import { User, UserInfo } from 'types/user';
+import { User } from 'types/user';
 import { SALT_ROUND } from '@defines/bcrypt';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -15,14 +15,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { db } = await connectMongo();
     const user = await db
       .collection<User>('user')
-      .findOne<UserInfo>(
+      .findOneAndUpdate(
         { _id: userId },
+        { $set: { activatedAt: new Date() } },
         { projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1 } },
       );
 
-    if (!user) throw new Error('Cannot find user.');
+    if (!user.value) throw new Error('Cannot find user.');
 
-    return res.json(user);
+    return res.json(user.value);
   }
 
   if (req.method === 'POST') {
@@ -56,6 +57,38 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       email,
       profileUrl: null,
       password: await bcrypt.hash(password, SALT_ROUND),
+      stats5M: {
+        president: {
+          win: 0,
+          lose: 0,
+        },
+        friend: { win: 0, lose: 0 },
+        opposite: { win: 0, lose: 0 },
+        optionalStats: {
+          run: 0,
+          backRun: 0,
+          nogi: 0,
+          nogiRun: 0,
+          nogiBackRun: 0,
+        },
+      },
+      stats6M: {
+        president: {
+          win: 0,
+          lose: 0,
+        },
+        friend: { win: 0, lose: 0 },
+        opposite: { win: 0, lose: 0 },
+        died: 0,
+        optionalStats: {
+          run: 0,
+          backRun: 0,
+          nogi: 0,
+          nogiRun: 0,
+          nogiBackRun: 0,
+        },
+      },
+      activatedAt: new Date(),
       createdAt: new Date(),
       updatedAt: new Date(),
       approvedAt: null,

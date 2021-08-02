@@ -1,6 +1,8 @@
 export async function fetcher<T = any>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, init);
 
+  if (response.status === 304) return undefined as never;
+
   if (!response.ok) {
     const contentType = response.headers.get('Content-Type');
     if (!contentType || contentType.indexOf('application/json') === -1) {
