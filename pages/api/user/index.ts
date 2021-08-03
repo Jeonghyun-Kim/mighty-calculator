@@ -1,12 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
+
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
 import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
-import { User } from 'types/user';
 import { SALT_ROUND } from '@defines/bcrypt';
+
+import { User } from 'types/user';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

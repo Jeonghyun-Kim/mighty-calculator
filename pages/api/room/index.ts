@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
 import Joi, { ValidationError } from 'joi';
 
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
 import { connectMongo } from '@utils/connect-mongo';
+import { isValidId } from '@lib/is-valid-id';
 
 import { Room } from 'types/room';
 
@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return res.json({ rooms });
+    return res.json(rooms);
   }
 
   if (req.method === 'POST') {
@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     };
 
     for (const participantId of participantIds) {
-      if (!ObjectId.isValid(participantId)) {
+      if (!isValidId(participantId)) {
         throw new ValidationError(`invalid paricipantId: ${participantId}`, '', '');
       }
     }
@@ -52,10 +52,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       state: 'inProgress',
       title,
       dealer: participants[0],
-      participants: participants.map((user) => ({ user, score: 0 })),
+      participants,
       comments: [],
       createdAt: new Date(),
+      updatedAt: new Date(),
       deletedAt: null,
+      approvedAt: null,
     });
 
     return res.status(201).json({ roomId: insertedId });

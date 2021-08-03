@@ -5,10 +5,12 @@ export interface Room {
   state: 'inProgress' | 'ended';
   title: string;
   dealer: UserInfo;
-  participants: { user: UserInfo; score: number }[];
+  participants: UserInfo[];
   comments: [];
   createdAt: OurDate;
+  updatedAt: OurDate;
   deletedAt: OurDate | null;
+  approvedAt: OurDate | null;
 }
 
 export {};

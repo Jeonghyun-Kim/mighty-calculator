@@ -7,10 +7,9 @@ import { withErrorHandler } from '@utils/with-error-handler';
 import { connectMongo } from '@utils/connect-mongo';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
 import { getGameByQuery } from '@utils/game';
-
-import { Game, gaemSchema } from 'types/game';
-import { Room } from 'types/room';
 import { getRoomById, isParticipant } from '@utils/room';
+
+import { Game, gameSchema } from 'types/game';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const game = await getGameByQuery(req, res);
@@ -30,8 +29,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!room) return res.status(404).json(createError('NO_SUCH_ROOM'));
     if (room.state === 'ended') return res.status(400).json(createError('ROOM_ENDED'));
 
-    const { _presidentId, _friendId, _oppositionIds, _diedId, type, giru, promise, win, run } =
-      (await gaemSchema.validateAsync(req.body)) as Omit<
+    const { _presidentId, _friendId, _oppositionIds, _diedId, type, isNogi, isRun, win } =
+      (await gameSchema.validateAsync(req.body)) as Omit<
         Game,
         '_id' | '_roomId' | 'createdAt' | 'deletedAt'
       > & { _diedId: OurId | null };
@@ -43,10 +42,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       { _id: game._id },
       {
         type,
-        giru,
-        promise,
+        isNogi,
+        isRun,
         win,
-        run,
         _presidentId: new ObjectId(_presidentId),
         _friendId: _friendId ? new ObjectId(_friendId) : null,
         _oppositionIds: _oppositionIds.map((id) => new ObjectId(id)) as never,

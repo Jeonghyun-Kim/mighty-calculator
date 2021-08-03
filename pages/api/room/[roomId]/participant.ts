@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
 import Joi, { ValidationError } from 'joi';
 
 import { createError } from '@defines/errors';
@@ -8,6 +7,8 @@ import { connectMongo } from '@utils/connect-mongo';
 import { verifySession } from '@lib/server/verify-session';
 import { getRoomByQuery, isParticipant } from '@utils/room';
 import { getUserInfoById } from '@utils/user';
+import { compareId } from '@lib/server/compare-id';
+import { isValidId } from '@lib/is-valid-id';
 
 import { Room } from 'types/room';
 
@@ -19,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     participantId: string;
   };
 
-  if (!ObjectId.isValid(participantId))
+  if (!isValidId(participantId))
     throw new ValidationError(`Invalid participantId: ${participantId}`, '', '');
 
   const room = await getRoomByQuery(req, res);
@@ -41,12 +42,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { db } = await connectMongo();
 
-    await db
-      .collection<Room>('room')
-      .updateOne(
-        { _id: room._id },
-        { $addToSet: { participants: { user: participant, score: 0 } } },
-      );
+    await db.collection<Room>('room').updateOne(
+      { _id: room._id },
+      {
+        $addToSet: { participants: participant },
+      },
+    );
 
     return res.status(204).end();
   }
@@ -56,16 +57,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(304).end();
     }
 
+    if (compareId(participantId, room.dealer._id)) {
+      return res.status(400).json(createError('DEALER_CANNOT_BE_REMOVED'));
+    }
+
+    const exParticipant = room.participants.find((user) => compareId(user._id, participantId));
+    if (!exParticipant) throw new Error('Server Error!');
+
     const participant = await getUserInfoById(res, participantId);
 
     const { db } = await connectMongo();
 
     await db
       .collection<Room>('room')
-      .updateOne(
-        { _id: room._id },
-        { $pull: { participants: { user: { _id: participant._id } } } },
-      );
+      .updateOne({ _id: room._id }, { $pull: { participants: { _id: participant._id } } });
 
     return res.status(204).end();
   }

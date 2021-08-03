@@ -16,6 +16,7 @@ import { User } from 'types/user';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     const { userId } = verifySession(req, res);
+
     return res.json({ userId });
   }
 

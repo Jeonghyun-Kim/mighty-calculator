@@ -126,6 +126,16 @@ const ERRORS = {
     name: 'Room ended',
     message: 'You cannot add games to the ended room.',
   },
+  SCORE_NOT_EMPTY: {
+    code: 'KE103',
+    name: 'Participant scrore is not empty',
+    message: 'You cannot remove participant from the room if the participant has scores.',
+  },
+  DEALER_CANNOT_BE_REMOVED: {
+    code: 'KE104',
+    name: 'Dealer cannot be removed',
+    message: 'The dealer of the room cannot be removed. Assign a new dealer and retry.',
+  },
   NO_SUCH_GAME: {
     code: 'KE201',
     name: 'No such game',

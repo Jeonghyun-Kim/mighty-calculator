@@ -4,6 +4,7 @@ import Joi, { ValidationError } from 'joi';
 
 import { connectMongo } from '@utils/connect-mongo';
 import { createError } from '@defines/errors';
+import { isValidId } from '@lib/is-valid-id';
 
 import { Room } from 'types/room';
 
@@ -11,7 +12,7 @@ export async function getRoomByQuery(req: NextApiRequest, res: NextApiResponse) 
   const querySchema = Joi.object({ roomId: Joi.string().hex().length(24).required() });
   const { roomId } = (await querySchema.validateAsync(req.query)) as { roomId: string };
 
-  if (!ObjectId.isValid(roomId)) throw new ValidationError(`Invalid roomId: ${roomId}`, '', '');
+  if (!isValidId(roomId)) throw new ValidationError(`Invalid roomId: ${roomId}`, '', '');
 
   const { db } = await connectMongo();
   const room = await db
@@ -34,5 +35,5 @@ export async function getRoomById(roomId: OurId) {
 }
 
 export function isParticipant(id: OurId, room: Room) {
-  return room.participants.map(({ user }) => String(user._id)).includes(String(id));
+  return room.participants.map(({ _id }) => String(_id)).includes(String(id));
 }

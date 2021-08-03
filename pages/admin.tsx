@@ -1,20 +1,18 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
-import NextLink from 'next/link';
 
 import { useUI } from '@components/context';
 import { Button } from '@components/ui';
 import { getSignupRequests } from '@lib/get-signup-requests';
-import { useSession } from '@lib/hooks/use-session';
 import Loading from '@components/core/Loading';
 import { approveSignupRequest } from '@lib/approve-signup-request';
 import { momentDate } from '@utils/moment';
+import { DashboardLayout } from '@components/layout';
 
 import { Unwrap } from 'types';
 
 export default function AdminPage() {
   const router = useRouter();
-  useSession({ redirectTo: '/signin' });
 
   const [adminKey, setAdminKey] = useState('');
   const [users, setUsers] = useState<Unwrap<typeof getSignupRequests> | null>(null);
@@ -64,11 +62,6 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-screen-lg mx-auto py-8 px-4">
-      <NextLink href="/dashboard" passHref>
-        <Button color="white" size="sm" className="mb-4">
-          Back to Dashboard
-        </Button>
-      </NextLink>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -183,3 +176,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+AdminPage.Layout = DashboardLayout;

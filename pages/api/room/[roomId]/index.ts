@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
 import Joi, { ValidationError } from 'joi';
 
 import { verifySession } from '@lib/server/verify-session';
@@ -8,6 +7,7 @@ import { withErrorHandler } from '@utils/with-error-handler';
 import { connectMongo } from '@utils/connect-mongo';
 import { getUserInfoById } from '@utils/user';
 import { compareId } from '@lib/server/compare-id';
+import { isValidId } from '@lib/is-valid-id';
 import { getRoomByQuery, isParticipant } from '@utils/room';
 
 import { Room } from 'types/room';
@@ -21,12 +21,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.json(room);
   }
 
+  if (req.method === 'POST') {
+    const { userId } = verifySession(req, res);
+
+    if (room.state === 'ended') return res.status(304).end();
+
+    if (!compareId(room.dealer._id, userId)) {
+      return res.status(403).json(createError('NO_PERMISSION'));
+    }
+
+    // TODO: noti to admin?
+
+    const { db } = await connectMongo();
+    await db
+      .collection<Room>('room')
+      .updateOne({ _id: room._id }, { $set: { state: 'ended', updatedAt: new Date() } });
+
+    return res.status(204).end();
+  }
+
   if (req.method === 'PATCH') {
     const { userId } = verifySession(req, res);
 
     if (room.state === 'ended') return res.status(400).json(createError('ROOM_ENDED'));
 
-    if (String(room.dealer._id) !== String(userId)) {
+    if (!compareId(room.dealer._id, userId)) {
       return res.status(403).json(createError('NO_PERMISSION'));
     }
 
@@ -34,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       dealerId: Joi.string().hex().length(24).required(),
     }).validateAsync(req.body)) as { dealerId: string };
 
-    if (!ObjectId.isValid(dealerId) || !isParticipant(dealerId, room)) {
+    if (!isValidId(dealerId) || !isParticipant(dealerId, room)) {
       throw new ValidationError('dealderId validation failed', '', '');
     }
 
