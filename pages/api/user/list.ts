@@ -13,11 +13,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { db } = await connectMongo();
     const users = await db
       .collection<User>('user')
-      .find({ approvedAt: { $ne: null } })
+      .find(
+        { approvedAt: { $ne: null } },
+        {
+          projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1, activatedAt: 1 },
+        },
+      )
       .sort({ activatedAt: -1 })
       .toArray();
 
-    return res.json({ users });
+    return res.json(users);
   }
 };
 

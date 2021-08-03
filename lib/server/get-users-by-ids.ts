@@ -29,7 +29,7 @@ export async function getUsersByIds(userIds: (OurId | undefined | null)[]) {
         $sort: { __order: 1 },
       },
       {
-        $project: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1 },
+        $project: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1, activatedAt: 1 },
       },
     ])
     .toArray<UserInfo>();

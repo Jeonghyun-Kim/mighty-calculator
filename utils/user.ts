@@ -13,7 +13,7 @@ export async function getUserInfoById(res: NextApiResponse, userId: OurId) {
     .collection<User>('user')
     .findOne<UserInfo>(
       { _id: new ObjectId(userId), approvedAt: { $ne: null } },
-      { projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1 } },
+      { projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1, activatedAt: 1 } },
     );
 
   if (!user) {

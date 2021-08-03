@@ -1,3 +1,5 @@
+import { Expand } from 'types';
+
 export type Stat = {
   win: number;
   lose: number;
@@ -41,6 +43,11 @@ export interface User {
   approvedAt: OurDate | null;
 }
 
-export type UserInfo = Pick<User, '_id' | 'name' | 'displayName' | 'email' | 'profileUrl'>;
+export type UserInfo = Pick<
+  User,
+  '_id' | 'name' | 'displayName' | 'email' | 'profileUrl' | 'activatedAt'
+>;
+
+export type UserInfoWithStats = Expand<UserInfo & Pick<User, 'stats5M' | 'stats6M'>>;
 
 export {};

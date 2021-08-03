@@ -13,13 +13,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { userId } = verifySession(req, res, { renewSession: true });
 
     const { db } = await connectMongo();
-    const user = await db
-      .collection<User>('user')
-      .findOneAndUpdate(
-        { _id: userId },
-        { $set: { activatedAt: new Date() } },
-        { projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1 } },
-      );
+    const user = await db.collection<User>('user').findOneAndUpdate(
+      { _id: userId },
+      { $set: { activatedAt: new Date() } },
+      {
+        projection: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1, activatedAt: 1 },
+      },
+    );
 
     if (!user.value) throw new Error('Cannot find user.');
 
