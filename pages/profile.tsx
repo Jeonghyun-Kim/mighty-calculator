@@ -10,20 +10,30 @@ import { updateDisplayName } from '@lib/update-display-name';
 export default function ProfilePage() {
   const { user, mutate } = useSession();
   const [displayName, setDisplayName] = useState<string | null>(null);
-  const [loadingFlags, setLoadingFlags] = useState({ displayName: false, picture: false });
+  const [loadingFlags, setLoadingFlags] = useState({
+    displayName: false,
+    picture: false,
+    changed: false,
+  });
 
   const { showNoti } = useUI();
 
   useEffect(() => {
-    if (user) setDisplayName(user.displayName);
-  }, [user]);
+    if (user && !loadingFlags.changed) {
+      setDisplayName(user.displayName);
+    }
+  }, [user, loadingFlags.changed]);
 
   const handleUpdateDisplayName = useCallback(
     (displayName: string) => {
       if (!displayName || loadingFlags.displayName) return;
       setLoadingFlags((prev) => ({ ...prev, displayName: true }));
       updateDisplayName(displayName)
-        .then(() => mutate())
+        .then(() => {
+          mutate();
+          setLoadingFlags((prev) => ({ ...prev, changed: false }));
+          showNoti({ title: `Diaplay Name has been successfuly changed to '${displayName}'.` });
+        })
         .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
         .finally(() => setLoadingFlags((prev) => ({ ...prev, displayName: false })));
     },
@@ -97,7 +107,10 @@ export default function ProfilePage() {
               id="displayName"
               className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500"
               value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              onChange={(e) => {
+                setDisplayName(e.target.value);
+                setLoadingFlags((prev) => ({ ...prev, changed: true }));
+              }}
             />
           </div>
           <div className="col-span-12 sm:col-span-6 flex justify-end">
