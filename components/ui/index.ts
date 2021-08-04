@@ -5,3 +5,4 @@ export { default as Link } from './Link';
 export { default as Modal } from './Modal';
 export { default as Notification } from './Notification';
 export { default as Select } from './Select';
+export { default as Toggle } from './Toggle';
