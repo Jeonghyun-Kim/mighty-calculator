@@ -8,7 +8,8 @@ import { connectMongo } from '@utils/connect-mongo';
 import { getUserInfoById } from '@utils/user';
 import { compareId } from '@lib/server/compare-id';
 import { isValidId } from '@lib/is-valid-id';
-import { getRoomByQuery, isParticipant } from '@utils/room';
+import { getRoomByQuery } from '@utils/room';
+import { isParticipant } from '@lib/is-participant';
 
 import { Room } from 'types/room';
 

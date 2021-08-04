@@ -6,13 +6,10 @@ import { Dialog, Transition } from '@headlessui/react';
 
 import CommonLayout from '@components/layout/Common';
 import {
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
   HomeIcon,
-  InboxIcon,
   LockOpenIcon,
   MenuIcon,
+  RssIcon,
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline';
@@ -22,7 +19,7 @@ import { useSession } from '@lib/hooks/use-session';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Users', href: '/user-list', icon: UsersIcon },
-  // { name: 'Projects', href: '#', icon: FolderIcon },
+  { name: 'Rooms', href: '/rooms', icon: RssIcon },
   // { name: 'Calendar', href: '#', icon: CalendarIcon },
   // { name: 'Documents', href: '#', icon: InboxIcon },
   // { name: 'Reports', href: '#', icon: ChartBarIcon },

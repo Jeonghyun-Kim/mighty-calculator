@@ -5,10 +5,11 @@ import { createError } from '@defines/errors';
 import { withErrorHandler } from '@utils/with-error-handler';
 import { connectMongo } from '@utils/connect-mongo';
 import { verifySession } from '@lib/server/verify-session';
-import { getRoomByQuery, isParticipant } from '@utils/room';
+import { getRoomByQuery } from '@utils/room';
 import { getUserInfoById } from '@utils/user';
 import { compareId } from '@lib/server/compare-id';
 import { isValidId } from '@lib/is-valid-id';
+import { isParticipant } from '@lib/is-participant';
 
 import { Room } from 'types/room';
 

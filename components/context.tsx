@@ -63,10 +63,7 @@ export const UIProvider: FC = ({ ...props }) => {
     if (timer.current) clearTimeout(timer.current);
 
     setState((prev) => {
-      const updatedState: State = {
-        ...prev,
-        notiFlag: false,
-      };
+      const updatedState: State = { ...prev, notiFlag: false };
       // sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
       return updatedState;
     });
@@ -74,7 +71,7 @@ export const UIProvider: FC = ({ ...props }) => {
       setState((prev) => {
         const updatedState: State = {
           ...prev,
-          notiContent: { variant: 'default', title: '', content: '' },
+          notiContent: initialState.notiContent,
           notiFlag: false,
         };
         // sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
@@ -93,11 +90,7 @@ export const UIProvider: FC = ({ ...props }) => {
       duration?: number,
     ) => {
       setState((prev) => {
-        const updatedState: State = {
-          ...prev,
-          notiContent,
-          notiFlag: true,
-        };
+        const updatedState: State = { ...prev, notiContent, notiFlag: true };
         // sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
         return updatedState;
       });
@@ -110,10 +103,7 @@ export const UIProvider: FC = ({ ...props }) => {
 
   const closeModal = useCallback(() => {
     setState((prev) => {
-      const updatedState: State = {
-        ...prev,
-        modalFlag: false,
-      };
+      const updatedState: State = { ...prev, modalFlag: false };
       sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
       return updatedState;
     });
@@ -121,13 +111,8 @@ export const UIProvider: FC = ({ ...props }) => {
       setState((prev) => {
         const updatedState: State = {
           ...prev,
-          modalContent: {
-            title: '',
-            content: '',
-            actionButton: { label: '확인', onClick: () => {} },
-            cancelButton: { label: '취소', onClick: () => {} },
-          },
-          modalFlag: false,
+          modalContent: initialState.modalContent,
+          modalFlag: initialState.modalFlag,
         };
         sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
         return updatedState;
@@ -137,11 +122,7 @@ export const UIProvider: FC = ({ ...props }) => {
 
   const showModal = useCallback((modal: ModalContent) => {
     setState((prev) => {
-      const updatedState: State = {
-        ...prev,
-        modalContent: modal,
-        modalFlag: true,
-      };
+      const updatedState: State = { ...prev, modalContent: modal, modalFlag: true };
       sessionStorage.setItem('@UIContext', JSON.stringify(updatedState));
       return updatedState;
     });
@@ -150,23 +131,12 @@ export const UIProvider: FC = ({ ...props }) => {
   useEffect(() => {
     const storedState = sessionStorage.getItem('@UIContext');
 
-    if (storedState)
-      setState({
-        ...JSON.parse(storedState),
-        ...initialState,
-        muted: true,
-      });
+    if (storedState) setState({ ...JSON.parse(storedState), ...initialState });
   }, []);
 
   return (
     <UIContext.Provider
-      value={{
-        ...state,
-        closeNoti,
-        showNoti,
-        closeModal,
-        showModal,
-      }}
+      value={{ ...state, closeNoti, showNoti, closeModal, showModal }}
       {...props}
     />
   );

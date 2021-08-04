@@ -33,7 +33,3 @@ export async function getRoomById(roomId: OurId) {
     .collection<Room>('room')
     .findOne({ _id: new ObjectId(roomId), deletedAt: null }, { projection: { deletedAt: 0 } });
 }
-
-export function isParticipant(id: OurId, room: Room) {
-  return room.participants.map(({ _id }) => String(_id)).includes(String(id));
-}

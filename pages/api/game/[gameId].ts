@@ -7,7 +7,8 @@ import { withErrorHandler } from '@utils/with-error-handler';
 import { connectMongo } from '@utils/connect-mongo';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
 import { getGameByQuery } from '@utils/game';
-import { getRoomById, isParticipant } from '@utils/room';
+import { getRoomById } from '@utils/room';
+import { isParticipant } from '@lib/is-participant';
 
 import { Game, gameSchema } from 'types/game';
 

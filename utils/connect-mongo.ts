@@ -32,15 +32,14 @@ export const connectMongo: () => Promise<{
   if (!cached.promise) {
     if (process.env.NODE_ENV === 'development') console.log('[MongoDB] creating new promise.');
     const conn: any = {};
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    cached.promise = MongoClient.connect(mongoUri, {
+      // useUrl: true,
+      // useUnifiedTopology: true,
       ignoreUndefined: true,
       maxIdleTimeMS: 5000,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 10000,
-    };
-    cached.promise = MongoClient.connect(mongoUri, opts)
+    })
       .then((client) => {
         conn.client = client;
         return client.db(dbName);
