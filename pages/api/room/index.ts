@@ -1,3 +1,4 @@
+import { compareId } from '@lib/server/compare-id';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi, { ValidationError } from 'joi';
 
@@ -45,7 +46,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    const participants = await getUsersByIds([userId, ...participantIds]);
+    const participants = await getUsersByIds([
+      userId,
+      ...participantIds.filter((id) => !compareId(id, userId)),
+    ]);
 
     const { db } = await connectMongo();
     const { insertedId } = await db.collection<Room>('room').insertOne({
