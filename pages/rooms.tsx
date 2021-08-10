@@ -5,6 +5,8 @@ import cn from 'classnames';
 
 import { DashboardLayout } from '@components/layout';
 import { Loading } from '@components/core';
+import { Avatar, Button, Link } from '@components/ui';
+
 import { momentDate } from '@utils/moment';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
@@ -19,7 +21,7 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
   return (
     <div
       className={cn(
-        'shadow-md rounded-md p-4',
+        'shadow-md rounded-md p-4 bg-white',
         joined ? 'ring' : 'border border-gray-300',
         joined && (isOpen ? 'ring-teal-300' : 'ring-red-300'),
       )}
@@ -89,17 +91,20 @@ export default function UserListPage() {
       <section className="mt-6">
         <h3 className="text-lg font-medium">Open rooms</h3>
         <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {openRooms.length === 0 ? (
-            <div>There&apos;s no room in progress.</div>
-          ) : (
+          <Link
+            href="/room/create"
+            className="w-full p-4 grid place-items-center rounded-md bg-white border border-dashed border-gray-500 hover:opacity-70"
+          >
+            <span className="text-gray-700 text-lg font-medium">+ Create new room</span>
+          </Link>
+          {openRooms.length !== 0 &&
             openRooms.map((room) => (
               <RoomListItem
                 key={`room-${room._id}`}
                 room={room}
                 joined={!!user?._id && isParticipant(user._id, room)}
               />
-            ))
-          )}
+            ))}
         </div>
       </section>
 

@@ -48,6 +48,6 @@ export type UserInfo = Pick<
   '_id' | 'name' | 'displayName' | 'email' | 'profileUrl' | 'activatedAt'
 >;
 
-export type UserInfoWithStats = Expand<UserInfo & Pick<User, 'stats5M' | 'stats6M'>>;
+// export type UserInfoWithStats = Expand<UserInfo & Pick<User, 'stats5M' | 'stats6M'>>;
 
 export {};

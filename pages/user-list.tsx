@@ -4,10 +4,10 @@ import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { momentDate } from '@utils/moment';
 
-import { UserInfoWithStats } from 'types/user';
+import { UserInfo } from 'types/user';
 
 export default function UserListPage() {
-  const { data: users } = useSWR<UserInfoWithStats[]>('/api/user/list');
+  const { data: users } = useSWR<UserInfo[]>('/api/user/list');
 
   if (!users) return <Loading />;
 

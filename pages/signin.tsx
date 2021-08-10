@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import NextImage from 'next/image';
 import useSWR from 'swr';
 import cookie from 'cookie';
@@ -32,7 +32,10 @@ export default function SinginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { showNoti } = useUI();
+  const { showNoti, closeNoti } = useUI();
+
+  // close notifications on leave page.
+  useEffect(() => () => closeNoti(), [closeNoti]);
 
   const requestSignin = useCallback(
     async (body: SigninWithEmailProps) => {
