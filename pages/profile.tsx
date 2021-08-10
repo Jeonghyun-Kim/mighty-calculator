@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useUI } from '@components/context';
-import Loading from '@components/core/Loading';
+import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Button } from '@components/ui';
+
 import { useSession } from '@lib/hooks/use-session';
 import { updateDisplayName } from '@lib/update-display-name';
 

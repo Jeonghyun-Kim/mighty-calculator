@@ -1,4 +1,4 @@
-import Loading from '@components/core/Loading';
+import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { useSession } from '@lib/hooks/use-session';
 

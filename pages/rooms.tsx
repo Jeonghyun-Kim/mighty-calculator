@@ -4,8 +4,7 @@ import useSWR from 'swr';
 import cn from 'classnames';
 
 import { DashboardLayout } from '@components/layout';
-import Loading from '@components/core/Loading';
-import { Avatar, Button } from '@components/ui';
+import { Loading } from '@components/core';
 import { momentDate } from '@utils/moment';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
