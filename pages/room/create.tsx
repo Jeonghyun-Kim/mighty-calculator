@@ -8,6 +8,8 @@ import { useUI } from '@components/context';
 import { Loading, UserSelect } from '@components/core';
 
 import { createRoom } from '@lib/create-room';
+import { compareId } from '@lib/server/compare-id';
+import { useSession } from '@lib/hooks/use-session';
 
 import { UserInfo } from 'types/user';
 
@@ -17,7 +19,9 @@ interface UserInfoClient extends UserInfo {
 
 export default function CreateRoomPage() {
   const router = useRouter();
+  const { user } = useSession();
   const { data: users } = useSWR<UserInfoClient[]>('/api/user/list');
+
   const [title, setTitle] = useState('');
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -50,22 +54,24 @@ export default function CreateRoomPage() {
       <div className="mt-6">
         <label className="text-sm font-medium text-gray-700">Participants</label>
         <div className="mt-2 grid grid-cols-12 gap-4">
-          {users.map((user) => (
-            <UserSelect
-              key={user._id}
-              className="col-span-12 sm:col-span-6 xl:col-span-4"
-              user={user}
-              selected={selectedUserIds.includes(user._id)}
-              onSelect={() => {
-                const idx = selectedUserIds.findIndex((id) => user._id === id);
-                if (idx === -1) {
-                  setSelectedUserIds((prev) => [...prev, user._id]);
-                } else {
-                  setSelectedUserIds((prev) => prev.filter((id) => id !== user._id));
-                }
-              }}
-            />
-          ))}
+          {users
+            .filter(({ _id }) => user && !compareId(_id, user._id))
+            .map((user) => (
+              <UserSelect
+                key={user._id}
+                className="col-span-12 sm:col-span-6 xl:col-span-4"
+                user={user}
+                selected={selectedUserIds.includes(user._id)}
+                onSelect={() => {
+                  const idx = selectedUserIds.findIndex((id) => user._id === id);
+                  if (idx === -1) {
+                    setSelectedUserIds((prev) => [...prev, user._id]);
+                  } else {
+                    setSelectedUserIds((prev) => prev.filter((id) => id !== user._id));
+                  }
+                }}
+              />
+            ))}
         </div>
       </div>
 
@@ -73,14 +79,13 @@ export default function CreateRoomPage() {
         <Button
           disabled={!title || loading}
           onClick={() => {
-            createRoom({ title, participantIds: selectedUserIds }).then((roomId) => {
-              router
-                .push(`/room/${roomId}`)
-                .then(closeNoti)
-                .catch((err) =>
-                  showNoti({ variant: 'alert', title: err.name, content: err.message }),
-                );
-            });
+            setLoading(true);
+            createRoom({ title, participantIds: selectedUserIds })
+              .then((roomId) => {
+                router.push(`/room/${roomId}`).then(closeNoti);
+              })
+              .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+              .finally(() => setLoading(false));
           }}
         >
           {loading ? 'Creating...' : 'Create'}

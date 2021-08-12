@@ -37,6 +37,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!room) return res.status(404).json(createError('NO_SUCH_ROOM'));
 
+    if (room.state !== 'ended') {
+      return res.status(400).json(createError('ROOM_NOT_ENDED'));
+    }
+
     if (room.approvedAt) {
       return res.status(304).end();
     }

@@ -1,22 +1,55 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import cn from 'classnames';
 
 import { DashboardLayout } from '@components/layout';
 import { Loading } from '@components/core';
-import { Avatar, Button, Link } from '@components/ui';
+import { Avatar, Button, Link, Toggle } from '@components/ui';
+import { useUI } from '@components/context';
 
 import { momentDate } from '@utils/moment';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
+import { closeRoomById } from '@lib/close-room-by-id';
 
 import { Room } from 'types/room';
 
 function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
   const router = useRouter();
+  const { user } = useSession();
 
   const isOpen = useMemo(() => room.state === 'inProgress', [room.state]);
+
+  const { showModal, showNoti } = useUI();
+
+  const handleCloseRoomClicked = useCallback(() => {
+    if (!user || user._id !== room.dealer._id) {
+      return showNoti({
+        variant: 'alert',
+        title: 'No permission',
+        content: 'Only dealer can close the room.',
+      });
+    }
+
+    showModal({
+      variant: 'alert',
+      title: 'Sure to close the Room?',
+      content: `After closing the room, you won't be able to add games to this room. This action cannot be reverted in any reason.`,
+      actionButton: {
+        label: 'Close',
+        onClick: () => {
+          closeRoomById(room._id as string)
+            .then(() => mutate('/api/room'))
+            .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }));
+        },
+      },
+      cancelButton: {
+        label: 'Cancel',
+        onClick: () => {},
+      },
+    });
+  }, [room, user, showModal, showNoti]);
 
   return (
     <div
@@ -33,13 +66,19 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
         <span
           className={cn('flex items-center space-x-2', isOpen ? 'text-teal-500' : 'text-red-500')}
         >
-          <span>{isOpen ? 'In Progress' : 'Ended'}</span>
-          <span
-            className={cn(
-              'w-4 h-4 rounded-full border shadow',
-              isOpen ? 'bg-teal-300 border-teal-400 animate-pulse' : 'bg-red-400 border-red-500',
-            )}
-          />
+          <span>{isOpen ? 'In Progress' : !room.approvedAt ? 'Ended' : 'Approved'}</span>
+          <button
+            disabled={!isOpen}
+            className="inline-flex disabled:cursor-default"
+            onClick={handleCloseRoomClicked}
+          >
+            <span
+              className={cn(
+                'w-4 h-4 rounded-full border shadow',
+                isOpen ? 'bg-teal-300 border-teal-400 animate-pulse' : 'bg-red-400 border-red-500',
+              )}
+            />
+          </button>
         </span>
       </div>
       <div className="mt-2 flex justify-between items-end">
@@ -49,10 +88,12 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
       <div className="flex justify-between items-end">
         <div>
           <p className="mt-4 text-gray-500 text-sm">Dealer</p>
-          <p className="mt-2 text-gray-500 text-sm font-semibold flex items-center">
-            <Avatar className="inline-block mr-2" size="sm" src={room.dealer.profileUrl} />{' '}
-            {room.dealer.displayName} ({room.dealer.name})
-          </p>
+          <div className="mt-2 text-gray-500 text-sm font-semibold flex items-center">
+            <Avatar className="inline-block mr-2" size="sm" src={room.dealer.profileUrl} />
+            <p className="ml-1">
+              {room.dealer.displayName} ({room.dealer.name})
+            </p>
+          </div>
         </div>
         <div>
           <Button
@@ -74,13 +115,29 @@ export default function UserListPage() {
   const [joinedOnly, setJoinedOnly] = useState(false);
 
   const openRooms = useMemo(
-    () => rooms && rooms.filter(({ state }) => state === 'inProgress'),
-    [rooms],
+    () =>
+      rooms &&
+      user &&
+      rooms
+        .filter(({ state }) => state === 'inProgress')
+        .filter(
+          ({ participants }) =>
+            !joinedOnly || participants.map(({ _id }) => _id).includes(user._id),
+        ),
+    [rooms, user, joinedOnly],
   );
 
   const closedRooms = useMemo(
-    () => rooms && rooms.filter(({ state }) => state === 'ended'),
-    [rooms],
+    () =>
+      rooms &&
+      user &&
+      rooms
+        .filter(({ state }) => state === 'ended')
+        .filter(
+          ({ participants }) =>
+            !joinedOnly || participants.map(({ _id }) => _id).includes(user._id),
+        ),
+    [rooms, user, joinedOnly],
   );
 
   if (!openRooms || !closedRooms) return <Loading />;
@@ -88,8 +145,16 @@ export default function UserListPage() {
   return (
     <div>
       <h2 className="text-2xl font-medium">Rooms</h2>
-      <section className="mt-6">
-        <h3 className="text-lg font-medium">Open rooms</h3>
+      <div className="mt-4 flex space-x-2">
+        <span>Joined rooms only</span>
+        <Toggle
+          enabled={joinedOnly}
+          setEnabled={setJoinedOnly}
+          screenReaderLabel="joined rooms only"
+        />
+      </div>
+      <section className="mt-2">
+        <h3 className="text-lg font-medium">Open rooms ({openRooms.length})</h3>
         <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
           <Link
             href="/room/create"
@@ -109,7 +174,7 @@ export default function UserListPage() {
       </section>
 
       <section className={cn('mt-6', { hidden: closedRooms.length === 0 })}>
-        <h3 className="text-lg font-medium">Closed rooms</h3>
+        <h3 className="text-lg font-medium">Closed rooms ({closedRooms.length})</h3>
         <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {closedRooms.map((room) => (
             <RoomListItem

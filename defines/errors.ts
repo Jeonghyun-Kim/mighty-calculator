@@ -136,6 +136,11 @@ const ERRORS = {
     name: 'Dealer cannot be removed',
     message: 'The dealer of the room cannot be removed. Assign a new dealer and retry.',
   },
+  ROOM_NOT_ENDED: {
+    code: 'KE105',
+    name: 'Not ended room',
+    message: 'You cannot approve the room which is not ended yet.',
+  },
   NO_SUCH_GAME: {
     code: 'KE201',
     name: 'No such game',
