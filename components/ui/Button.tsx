@@ -42,7 +42,7 @@ const ButtonWithRef = forwardRefWithAs(function Button<
     <Component
       className={cn(
         className,
-        'px-4 py-2 inline-flex items-center border shadow-sm rounded-md font-semibold',
+        'px-4 py-2 inline-flex items-center border shadow-sm rounded-md font-semibold disabled:cursor-default',
         {
           'text-sm': size === 'sm',
           'text-base': size === 'base',
@@ -50,10 +50,9 @@ const ButtonWithRef = forwardRefWithAs(function Button<
           'justify-center w-full px-1.5 py-2': full,
         },
         colorClasses[color],
-        {
-          'text-white disabled:text-gray-50 disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-default':
-            color !== 'white',
-        },
+        color !== 'white'
+          ? 'text-white disabled:text-gray-50 disabled:bg-gray-400 disabled:opacity-70'
+          : 'disabled:text-gray-600 disabled:bg-gray-50',
       )}
       {...passthroughProps}
       {...propsWeControl}

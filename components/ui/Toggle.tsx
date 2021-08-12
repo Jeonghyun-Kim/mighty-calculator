@@ -4,7 +4,7 @@ import { Switch } from '@headlessui/react';
 interface ToggleProps {
   className?: string;
   enabled: boolean;
-  size?: 'sm' | 'md';
+  // size?: 'sm' | 'md';
   setEnabled: (enabled: boolean) => void;
   screenReaderLabel?: string;
 }
@@ -12,7 +12,7 @@ interface ToggleProps {
 export default function Toggle({
   className,
   enabled,
-  size = 'md',
+  // size = 'md',
   setEnabled,
   screenReaderLabel,
 }: ToggleProps) {

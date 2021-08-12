@@ -1,3 +1,4 @@
+import { getRoomByQuery } from '@utils/room';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi from 'joi';
 import { ObjectId } from 'mongodb';
@@ -29,13 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     verifyAdminKey(req, res);
 
-    const schema = Joi.object({ roomId: Joi.string().label('roomId').hex().length(24).required() });
-    const { roomId } = await schema.validateAsync(req.query);
-
-    const { db } = await connectMongo();
-    const room = await db.collection<Room>('room').findOne({ _id: new ObjectId(roomId) });
-
-    if (!room) return res.status(404).json(createError('NO_SUCH_ROOM'));
+    const room = await getRoomByQuery(req, res);
 
     if (room.state !== 'ended') {
       return res.status(400).json(createError('ROOM_NOT_ENDED'));
@@ -66,6 +61,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     });
 
+    const { db } = await connectMongo();
+
     await Promise.all(
       updateQuery.map(async ({ userId, updateCount }) => {
         await db
@@ -77,6 +74,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     await db
       .collection<Room>('room')
       .updateOne({ _id: room._id }, { $set: { approvedAt: new Date() } });
+
+    return res.status(204).end();
+  }
+
+  if (req.method === 'DELETE') {
+    const room = await getRoomByQuery(req, res);
+
+    const { db } = await connectMongo();
+
+    if (room.approvedAt) {
+      return res.status(400).end();
+    }
+
+    await db
+      .collection<Room>('room')
+      .updateOne({ _id: room._id }, { $set: { deletedAt: new Date() } });
 
     return res.status(204).end();
   }
