@@ -7,10 +7,10 @@ import { withErrorHandler } from '@utils/with-error-handler';
 
 import { User } from 'types/user';
 
-const cdn_url = process.env.CDN_URL;
-if (!cdn_url) throw new Error('Missing CDN_URL');
+const awsPublicUrl = process.env.AWS_PUBLIC_URL;
+if (!awsPublicUrl) throw new Error('No such awsPublicUrl');
 
-const keyPrefix = `proof`;
+const keyPrefix = `mighty`;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = verifySession(req, res);
@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       { _id: userId },
       {
         $set: {
-          profileUrl: `${cdn_url}/${keyPrefix}/target/${key}`,
+          profileUrl: `${awsPublicUrl}/${keyPrefix}/target/${key}`,
         },
       },
     );

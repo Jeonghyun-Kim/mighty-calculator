@@ -21,11 +21,11 @@ import { verifySession } from '@lib/server/verify-session';
 const Bucket = process.env.AWS_PUBLIC_BUCKET_NAME;
 if (!Bucket) throw new Error('Missing AWS_PUBLIC_BUCKET_NAME');
 
-const cdn_url = process.env.CDN_URL;
-if (!cdn_url) throw new Error('Missing CDN_URL');
+const awsPublicUrl = process.env.AWS_PUBLIC_URL;
+if (!awsPublicUrl) throw new Error('Missing awsPublicUrl');
 
 const expiresIn = 300;
-const keyPrefix = `proof`;
+const keyPrefix = `mighty`;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   verifySession(req, res);
@@ -67,7 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json(createError('AWS_ERROR'));
     }
 
-    const imgBuffer = await got(`${cdn_url}/${keyPrefix}/original/${key}`).buffer();
+    const imgBuffer = await got(`${awsPublicUrl}/${keyPrefix}/original/${key}`).buffer();
 
     if (!imgBuffer) return res.status(500).json(createError('INTERNAL_SERVER_ERROR'));
 

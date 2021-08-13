@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ['cdn.coxwave.com'],
+    domains: ['mighty-sshs.s3.ap-northeast-2.amazonaws.com'],
   },
   async rewrites() {
     return [
