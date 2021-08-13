@@ -4,7 +4,7 @@ import useSWR, { mutate } from 'swr';
 import cn from 'classnames';
 
 import { DashboardLayout } from '@components/layout';
-import { Loading } from '@components/core';
+import { Loading, Title } from '@components/core';
 import { Avatar, Button, Link, Toggle } from '@components/ui';
 import { useUI } from '@components/context';
 
@@ -24,7 +24,9 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
   const { showModal, showNoti } = useUI();
 
   const handleCloseRoomClicked = useCallback(() => {
-    if (!user || user._id !== room.dealer._id) {
+    if (!user) return;
+
+    if (user._id !== room.dealer._id) {
       return showNoti({
         variant: 'alert',
         title: 'No permission',
@@ -144,7 +146,7 @@ export default function UserListPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-medium">Rooms</h2>
+      <Title>Rooms</Title>
       <div className="mt-4 flex space-x-2">
         <span>Joined rooms only</span>
         <Toggle
