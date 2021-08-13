@@ -10,8 +10,6 @@ import { User } from 'types/user';
 const awsPublicUrl = process.env.AWS_PUBLIC_URL;
 if (!awsPublicUrl) throw new Error('No such awsPublicUrl');
 
-const keyPrefix = `mighty`;
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = verifySession(req, res);
   if (req.method === 'POST') {
@@ -27,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       { _id: userId },
       {
         $set: {
-          profileUrl: `${awsPublicUrl}/${keyPrefix}/target/${key}`,
+          profileUrl: `${awsPublicUrl}/target/${key}`,
         },
       },
     );

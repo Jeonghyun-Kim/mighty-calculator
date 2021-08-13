@@ -25,7 +25,6 @@ const awsPublicUrl = process.env.AWS_PUBLIC_URL;
 if (!awsPublicUrl) throw new Error('Missing awsPublicUrl');
 
 const expiresIn = 300;
-const keyPrefix = `mighty`;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   verifySession(req, res);
@@ -39,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { url, fields } = await createPresignedPost(s3Client, {
       Bucket,
-      Key: `${keyPrefix}/original/${key}`,
+      Key: `original/${key}`,
       Conditions: [{ Bucket }, ['content-length-range', 1, 50 * 1024 * 1024]],
       Fields: { acl: 'public-read' },
       Expires: expiresIn,
@@ -55,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { key } = (await querySchema.validateAsync(req.query)) as { key: string };
 
-    const headCommand = new HeadObjectCommand({ Bucket, Key: `${keyPrefix}/original/${key}` });
+    const headCommand = new HeadObjectCommand({ Bucket, Key: `original/${key}` });
 
     try {
       await s3Client.send(headCommand);
@@ -67,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json(createError('AWS_ERROR'));
     }
 
-    const imgBuffer = await got(`${awsPublicUrl}/${keyPrefix}/original/${key}`).buffer();
+    const imgBuffer = await got(`${awsPublicUrl}/original/${key}`).buffer();
 
     if (!imgBuffer) return res.status(500).json(createError('INTERNAL_SERVER_ERROR'));
 
@@ -82,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       new CreateMultipartUploadCommand({
         ACL: 'public-read',
         Bucket,
-        Key: `${keyPrefix}/target/${key}`,
+        Key: `target/${key}`,
       }),
     );
 
