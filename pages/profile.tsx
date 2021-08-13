@@ -1,16 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Cropper, { ReactCropperElement } from 'react-cropper';
 
 import { useUI } from '@components/context';
 import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Button } from '@components/ui';
+import DragDrop from '@components/ui/DragDrop';
 
 import { useSession } from '@lib/hooks/use-session';
 import { updateDisplayName } from '@lib/update-display-name';
+import { fetcher } from '@lib/fetcher';
+
+import 'cropperjs/dist/cropper.css';
 
 export default function ProfilePage() {
   const { user, mutate } = useSession();
+  const cropperRef = useRef<ReactCropperElement>(null);
+
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
   const [loadingFlags, setLoadingFlags] = useState({
     displayName: false,
     picture: false,
@@ -18,6 +28,50 @@ export default function ProfilePage() {
   });
 
   const { showNoti } = useUI();
+
+  const handleUpload = useCallback(async () => {
+    const cropperElem = cropperRef.current;
+    if (!file || !cropperElem) return;
+
+    try {
+      setLoading(true);
+
+      const { url, fields } = await fetcher<{ url: string; fields: { [key: string]: string } }>(
+        `/api/aws/presigned-post?key=${file.name}`,
+      );
+
+      const formData = new FormData();
+      Object.entries({ ...fields }).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      const croppedFile = await new Promise<Blob>((resolve, reject) =>
+        cropperElem.cropper.getCroppedCanvas().toBlob((blob) => {
+          if (!blob) reject('Blob is null');
+          else resolve(blob);
+        }),
+      );
+
+      formData.append('file', croppedFile, file.name);
+
+      const response = await fetch(url, { method: 'POST', body: formData });
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      await fetcher(`/api/aws/presigned-post?key=${file.name}`, { method: 'POST' });
+
+      // combine that use ky?
+      await fetcher(`/api/user/profile?key=${file.name}`, { method: 'POST' });
+      mutate();
+
+      showNoti({ title: 'Succesfully Uploaded!' });
+    } catch (err) {
+      showNoti({ variant: 'alert', title: err.name, content: err.message });
+    } finally {
+      setLoading(false);
+    }
+  }, [file, showNoti, mutate]);
 
   useEffect(() => {
     if (user && !loadingFlags.changed) {
@@ -132,8 +186,42 @@ export default function ProfilePage() {
 
       {/* TODO: add profile picture section */}
       <div className="mt-8 p-4 border border-gray-200 rounded-lg">
-        <h4 className="text-lg font-medium text-gray-700">Picture</h4>
-        <p className="mt-1.5 text-sm text-gray-500">This feature is preparing now.</p>
+        <h4 className="text-lg font-medium text-gray-700 mb-2">Profile</h4>
+
+        {previewUrl && (
+          <div className="relative my-4 grid grid-cols-3 gap-4 w-full">
+            <div className="col-span-2">
+              <h6 className="font-semibold mb-2">Selected Image</h6>
+              <Cropper
+                className="max-h-[400px] rounded-md shadow-md"
+                alt="preview image"
+                preview=".crop-preview"
+                background={false}
+                src={previewUrl}
+                aspectRatio={1}
+                minCropBoxHeight={10}
+                minCropBoxWidth={10}
+                guides={false}
+                ref={cropperRef}
+              />
+            </div>
+            <div className="self-end justify-self-center">
+              <h6 className="font-semibold mb-2 text-center">Preview</h6>
+              <div className="crop-preview overflow-hidden rounded-full shadow-md w-full h-[100px]" />
+            </div>
+          </div>
+        )}
+        <DragDrop
+          onDropFile={(file) => {
+            setPreviewUrl(URL.createObjectURL(file));
+            setFile(file);
+          }}
+        />
+        <div className="flex justify-end">
+          <Button disabled={loading} onClick={handleUpload} className="text-right mt-4">
+            Update Profile
+          </Button>
+        </div>
       </div>
     </div>
   );

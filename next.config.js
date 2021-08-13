@@ -1,4 +1,7 @@
 module.exports = {
+  images: {
+    domains: ['cdn.coxwave.com'],
+  },
   async rewrites() {
     return [
       {
