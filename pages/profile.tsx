@@ -65,6 +65,9 @@ export default function ProfilePage() {
       await fetcher(`/api/user/profile?key=${file.name}`, { method: 'POST' });
       mutate();
 
+      setPreviewUrl('');
+      setFile(null);
+
       showNoti({ title: 'Succesfully Uploaded!' });
     } catch (err) {
       showNoti({ variant: 'alert', title: err.name, content: err.message });
@@ -218,8 +221,8 @@ export default function ProfilePage() {
           }}
         />
         <div className="flex justify-end">
-          <Button disabled={loading} onClick={handleUpload} className="text-right mt-4">
-            Update Profile
+          <Button disabled={loading || !file} onClick={handleUpload} className="text-right mt-4">
+            Save
           </Button>
         </div>
       </div>
