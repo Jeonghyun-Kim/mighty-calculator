@@ -2,20 +2,23 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 import { ObjectId } from 'mongodb';
 import cn from 'classnames';
+import useSWR, { mutate } from 'swr';
 
 import { DashboardLayout } from '@components/layout';
 import { connectMongo } from '@utils/connect-mongo';
 
 import { Room } from 'types/room';
 import { useSession } from '@lib/hooks/use-session';
-import useSWR, { mutate } from 'swr';
 import { Loading, Title } from '@components/core';
-import { Game } from 'types/game';
-import { useCallback, useMemo } from 'react';
+import { Game, GameType } from 'types/game';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUI } from '@components/context';
 import { closeRoomById } from '@lib/close-room-by-id';
-import { Avatar, Button, Dropdown } from '@components/ui';
+import { Avatar, Button, Dropdown, Select } from '@components/ui';
 import { transferDealerTo } from '@lib/transfer-dealer-to';
+import { addNewGame } from '@lib/add-new-game';
+import { XIcon } from '@heroicons/react/outline';
+import { deleteGameById } from '@lib/delete-game-by-id';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -48,9 +51,28 @@ export const getStaticProps: GetStaticProps<PageProps, Params> = async ({ params
 export default function RoomDetailsPage({ roomId }: PageProps) {
   const { user } = useSession();
   const { data: room, mutate: mutateRoom } = useSWR<Room>(`/api/room/${roomId}`);
-  const { data: games } = useSWR<Game[]>(`/api/room/${roomId}/game`);
+  const { data: games, mutate: mutateGames } = useSWR<Game[]>(`/api/room/${roomId}/game`, {
+    refreshInterval: 3000,
+  });
+  const [_presidentId, setPresidentId] = useState<string | null>(null);
+  const [_friendId, setFriendId] = useState<string | null>(null);
+  const [_diedId, setDiedId] = useState<string | null>(null);
+  const [gameConfig, setGameConfig] = useState<Pick<Game, 'isNogi' | 'isRun'>>({
+    isNogi: false,
+    isRun: false,
+  });
+  const [loading, setLoading] = useState(false);
 
+  const gameType = useMemo(() => (room && room.participants.length === 6 ? '6M' : '5M'), [room]);
   const isOpen = useMemo(() => room && room.state === 'inProgress', [room]);
+  const isValid = useMemo(() => {
+    if (!room) return false;
+    if (room.participants.length === 6) {
+      return Boolean(_presidentId && _friendId && _diedId);
+    }
+
+    return Boolean(_presidentId && _friendId);
+  }, [room, _presidentId, _friendId, _diedId]);
 
   const { showModal, alertNoti, showNoti } = useUI();
 
@@ -83,12 +105,56 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
     });
   }, [room, user, showModal, alertNoti]);
 
+  const handleAddNewGame = useCallback(
+    (presidentWin: boolean) => {
+      if (!room) return;
+      setLoading(true);
+      addNewGame(
+        room._id as string,
+        {
+          type: gameType,
+          ...gameConfig,
+          win: presidentWin,
+          _presidentId,
+          _friendId,
+          _diedId,
+          _oppositionIds: room.participants
+            .filter(({ _id }) => ![_presidentId, _friendId, _diedId].includes(_id as string))
+            .map(({ _id }) => _id),
+        } as never,
+      )
+        .then(() => mutateGames())
+        .then(() => {
+          setPresidentId(null);
+          setFriendId(null);
+          setDiedId(null);
+          setGameConfig({ isNogi: false, isRun: false });
+          showNoti({ title: 'Successfully Updated!' });
+        })
+        .catch(alertNoti)
+        .finally(() => setLoading(false));
+    },
+    [
+      room,
+      gameType,
+      gameConfig,
+      _presidentId,
+      _friendId,
+      _diedId,
+      mutateGames,
+      alertNoti,
+      showNoti,
+    ],
+  );
+
   if (!room || !games || !user) return <Loading />;
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <Title>Room - {room.title}</Title>
+        <Title>
+          Room - {room.title} ({gameType})
+        </Title>
 
         <span
           className={cn('flex items-center space-x-2', isOpen ? 'text-teal-500' : 'text-red-500')}
@@ -108,6 +174,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
           </button>
         </span>
       </div>
+
       <div className="mt-2">
         <h6 className="font-medium">Dealer</h6>
         <div className="flex justify-between items-center">
@@ -155,6 +222,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
           </div>
         </div>
       </div>
+
       <div
         className={cn('my-4 lg:hidden', {
           hidden: user._id !== room.dealer._id,
@@ -168,6 +236,296 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
         >
           {isOpen ? 'End this room' : 'Room ended'}
         </Button>
+      </div>
+
+      <div className="mt-4">
+        <h6 className="font-medium">Scores</h6>
+        {/* TODO: add scoreboard!!! */}
+        {/* <div>{games.length === 0 && <p>Register games to calculate scores.</p>}</div> */}
+      </div>
+
+      <div
+        className={cn('mt-4', {
+          hidden: !isOpen || user._id !== room.dealer._id,
+        })}
+      >
+        <h6 className="font-medium">Register a new game</h6>
+        <div className="mt-2 border border-gray-200 rounded-md shadow-md">
+          <form className="p-4 space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <Select
+              label="Died"
+              className={cn({ hidden: room.participants.length !== 6 })}
+              items={[
+                { key: 'died-null', label: 'Not Selected', value: null },
+                ...room.participants.map(({ _id, displayName }) => ({
+                  key: `died-${_id}`,
+                  label: displayName,
+                  value: _id,
+                })),
+              ]}
+              selectedValue={_diedId}
+              onSelect={({ value }) => setDiedId(value as never)}
+            />
+            <Select
+              label="President"
+              items={[
+                { key: 'president-null', label: 'Not Selected', value: null },
+                ...room.participants
+                  .filter(({ _id }) => _id !== _diedId)
+                  .map(({ _id, displayName }) => ({
+                    key: `president-${_id}`,
+                    label: displayName,
+                    value: _id,
+                  })),
+              ]}
+              selectedValue={_presidentId}
+              onSelect={({ value }) => setPresidentId(value as never)}
+            />
+            <Select
+              label="Friend"
+              disabled={_presidentId === null}
+              items={[
+                { key: 'friend-null', label: 'Not Selected', value: null },
+                ...room.participants
+                  .filter(({ _id }) => _id !== _diedId)
+                  // .filter(({ _id }) => _id !== _presidentId)
+                  .map(({ _id, displayName }) => ({
+                    key: `friend-${_id}`,
+                    label: _id === _presidentId ? `${displayName} - (NF)` : displayName,
+                    value: _id,
+                  })),
+              ]}
+              selectedValue={_friendId}
+              onSelect={({ value }) => setFriendId(value as never)}
+            />
+            <div className="divide-y divide-gray-200">
+              <div className="relative flex items-start py-4">
+                <div className="min-w-0 flex-1 text-sm">
+                  <label htmlFor="no-giru" className="font-medium text-gray-700">
+                    No-Giru (노기루)
+                  </label>
+                  <p id="no-giru-description" className="text-gray-500">
+                    This game was No-Giru. (2x score)
+                  </p>
+                </div>
+                <div className="ml-3 flex items-center h-5">
+                  <input
+                    id="no-giru"
+                    aria-describedby="no-giru-description"
+                    name="no-giru"
+                    type="checkbox"
+                    checked={gameConfig.isNogi}
+                    onChange={(e) =>
+                      setGameConfig((prev) => ({ ...prev, isNogi: e.target.checked }))
+                    }
+                    className="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 rounded"
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="relative flex items-start py-4">
+                  <div className="min-w-0 flex-1 text-sm">
+                    <label htmlFor="run" className="font-medium text-gray-700">
+                      Run
+                    </label>
+                    <p id="run-description" className="text-gray-500">
+                      This game was run or back-run. (2x score)
+                    </p>
+                  </div>
+                  <div className="ml-3 flex items-center h-5">
+                    <input
+                      id="run"
+                      aria-describedby="run-description"
+                      name="run"
+                      type="checkbox"
+                      checked={gameConfig.isRun}
+                      onChange={(e) =>
+                        setGameConfig((prev) => ({ ...prev, isRun: e.target.checked }))
+                      }
+                      className="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                color="white"
+                full
+                disabled={loading || !isValid}
+                onClick={() => handleAddNewGame(false)}
+              >
+                Opposition (야당)
+              </Button>
+              <Button
+                color="teal"
+                full
+                disabled={loading || !isValid}
+                onClick={() => handleAddNewGame(true)}
+              >
+                President (주공)
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <h6 className="font-medium">History ({games.length})</h6>
+        {games.length === 0 ? (
+          <p className="my-2 text-center text-gray-500 text-sm lg:text-left">
+            There is no game in this room.
+          </p>
+        ) : (
+          <div className="mt-2 flex flex-col">
+            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="shadow-md overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-center sm:text-left md:text-center lg:text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          President
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-center sm:text-left md:text-center lg:text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Friend
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                        >
+                          Nogi
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                        >
+                          Run
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                        >
+                          Win
+                        </th>
+                        <th
+                          scope="col"
+                          className={cn('relative px-4 py-3', {
+                            hidden: !isOpen || user._id !== room.dealer._id,
+                          })}
+                        >
+                          <span className="sr-only">Delete</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {games.map((game) => {
+                        const president = room.participants.find(
+                          ({ _id }) => _id === game._presidentId,
+                        )!;
+                        const friend = room.participants.find(({ _id }) => _id === game._friendId)!;
+                        return (
+                          <tr key={game._id as string}>
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
+                                <Avatar size="sm" src={president.profileUrl} />
+                                <div className="ml-4 hidden sm:block md:hidden lg:block">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {president.displayName}
+                                  </div>
+                                  <div className="text-sm text-gray-500">{president.name}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
+                                <Avatar size="sm" src={friend.profileUrl} />
+                                <div className="ml-4 hidden sm:block md:hidden lg:block">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {friend.displayName}
+                                  </div>
+                                  <div className="text-sm text-gray-500">{friend.name}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td
+                              className={cn(
+                                'px-4 py-4 whitespace-nowrap text-sm text-center',
+                                game.isNogi ? 'text-teal-500' : 'text-red-500',
+                              )}
+                            >
+                              {game.isNogi ? 'Y' : 'N'}
+                            </td>
+                            <td
+                              className={cn(
+                                'px-4 py-4 whitespace-nowrap text-sm text-center',
+                                game.isRun ? 'text-teal-500' : 'text-red-500',
+                              )}
+                            >
+                              {game.isRun ? 'Y' : 'N'}
+                            </td>
+                            <td
+                              className={cn(
+                                'px-4 py-4 whitespace-nowrap text-sm text-center',
+                                game.win ? 'text-teal-500' : 'text-red-500',
+                              )}
+                            >
+                              {game.win ? 'Y' : 'N'}
+                            </td>
+                            <td
+                              className={cn(
+                                'px-4 py-4 whitespace-nowrap text-right text-sm font-medium',
+                                {
+                                  hidden: !isOpen || user._id !== room.dealer._id,
+                                },
+                              )}
+                            >
+                              <button
+                                className="text-red-600 hover:text-red-900"
+                                onClick={() => {
+                                  showModal({
+                                    variant: 'alert',
+                                    title: 'Delete Game Confirmation',
+                                    content: `Are you sure you want to delete the game? This action cannot be reverted. (president ${
+                                      president.displayName
+                                    } ${game.win ? 'won' : 'lost'})`,
+                                    actionButton: {
+                                      label: 'Delete',
+                                      onClick: () => {
+                                        deleteGameById({ gameId: game._id })
+                                          .then(() => {
+                                            showNoti({ title: 'Successfully deleted the game' });
+                                            mutateGames();
+                                          })
+                                          .catch(alertNoti);
+                                      },
+                                    },
+                                    cancelButton: {
+                                      label: 'Cancel',
+                                      onClick: () => {},
+                                    },
+                                  });
+                                }}
+                              >
+                                <XIcon className="w-5 h-5" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

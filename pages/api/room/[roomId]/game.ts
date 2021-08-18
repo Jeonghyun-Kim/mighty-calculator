@@ -10,6 +10,7 @@ import { getRoomByQuery } from '@utils/room';
 import { isValidId } from '@lib/is-valid-id';
 import { getGamesByRoomId } from '@utils/game';
 
+import type { AddNewGameProps } from '@lib/add-new-game';
 import { gameSchema, Game } from 'types/game';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -29,10 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (room.state === 'ended') return res.status(400).json(createError('ROOM_ENDED'));
 
     const { _presidentId, _friendId, _oppositionIds, _diedId, type, isNogi, isRun, win } =
-      (await gameSchema.validateAsync(req.body)) as Omit<
-        Game,
-        '_id' | '_roomId' | 'createdAt' | 'updatedAt' | 'deletedAt'
-      > & { _diedId: OurId | null };
+      (await gameSchema.validateAsync(req.body)) as AddNewGameProps;
 
     const providedIds = Array.from(
       new Set(
@@ -65,7 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       isRun,
       win,
       _presidentId: new ObjectId(_presidentId),
-      _friendId: _friendId ? new ObjectId(_friendId) : null,
+      _friendId: new ObjectId(_friendId),
       _oppositionIds: _oppositionIds.map((id) => new ObjectId(id)) as never,
       _diedId: _diedId ?? (undefined as never),
       createdAt: new Date(),

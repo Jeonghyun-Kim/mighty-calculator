@@ -12,7 +12,7 @@ export interface Game5M {
   isRun: boolean;
   win: boolean;
   _presidentId: OurId;
-  _friendId: OurId | null;
+  _friendId: OurId;
   _oppositionIds: [OurId, OurId, OurId] | [OurId, OurId, OurId, OurId];
   createdAt: OurDate;
   updatedAt: OurDate;
@@ -34,9 +34,9 @@ export const gameSchema = Joi.object({
   isRun: Joi.bool().required(),
   win: Joi.bool().required(),
   _presidentId: Joi.string().hex().length(24).required(),
-  _friendId: Joi.string().hex().length(24).allow(null).default(null),
+  _friendId: Joi.string().hex().length(24).required(),
   _oppositionIds: Joi.when('_friendId', {
-    is: null,
+    is: Joi.ref('_presidentId'),
     then: Joi.array().items(Joi.string().hex().length(24).required()).length(4),
     otherwise: Joi.array().items(Joi.string().hex().length(24).required()).length(3),
   }),
