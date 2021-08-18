@@ -32,7 +32,7 @@ export default function SinginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { showNoti, closeNoti } = useUI();
+  const { alertNoti, closeNoti } = useUI();
 
   // close notifications on leave page.
   useEffect(() => () => closeNoti(), [closeNoti]);
@@ -45,12 +45,12 @@ export default function SinginPage() {
 
         mutate();
       } catch (err) {
-        showNoti({ variant: 'alert', title: err.name, content: err.message }, 10);
+        alertNoti(err, 10);
       } finally {
         setLoading(false);
       }
     },
-    [mutate, showNoti],
+    [mutate, alertNoti],
   );
 
   return (

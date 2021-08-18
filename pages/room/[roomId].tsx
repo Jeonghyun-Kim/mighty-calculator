@@ -52,19 +52,13 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
 
   const isOpen = useMemo(() => room && room.state === 'inProgress', [room]);
 
-  const { showModal, showNoti } = useUI();
-
-  const showAlert = useCallback(
-    (err: { name: string; message: string }) =>
-      showNoti({ variant: 'alert', title: err.name, content: err.message }),
-    [showNoti],
-  );
+  const { showModal, alertNoti, showNoti } = useUI();
 
   const handleCloseRoomClicked = useCallback(() => {
     if (!room || !user) return;
 
     if (user._id !== room.dealer._id) {
-      return showAlert({
+      return alertNoti({
         name: 'No permission',
         message: 'Only dealer can close the room.',
       });
@@ -79,7 +73,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
         onClick: () => {
           closeRoomById(room._id as string)
             .then(() => mutate('/api/room'))
-            .catch(showAlert);
+            .catch(alertNoti);
         },
       },
       cancelButton: {
@@ -87,7 +81,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
         onClick: () => {},
       },
     });
-  }, [room, user, showModal, showAlert]);
+  }, [room, user, showModal, alertNoti]);
 
   if (!room || !games || !user) return <Loading />;
 
@@ -144,7 +138,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             title: `The dealer successfully transferred to ${user.displayName}.`,
                           }),
                         )
-                        .catch(showAlert);
+                        .catch(alertNoti);
                     },
                   }))}
               />

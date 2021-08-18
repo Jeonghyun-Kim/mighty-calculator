@@ -29,7 +29,7 @@ export default function SingupPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { showNoti, showModal } = useUI();
+  const { alertNoti, showModal } = useUI();
 
   const requestSignup = useCallback(
     async (body: SignupLocalProps) => {
@@ -49,12 +49,12 @@ export default function SingupPage() {
 
         mutate();
       } catch (err) {
-        showNoti({ variant: 'alert', title: err.name, content: err.message }, 10);
+        alertNoti(err, 10);
       } finally {
         setLoading(false);
       }
     },
-    [mutate, showNoti, router, showModal],
+    [mutate, alertNoti, router, showModal],
   );
 
   return (

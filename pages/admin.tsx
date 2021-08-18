@@ -25,19 +25,19 @@ export default function AdminPage() {
     approve: false,
   });
 
-  const { showNoti, showModal } = useUI();
+  const { alertNoti, showModal } = useUI();
 
   const registerAdminKey = useCallback(
     (adminKey: string) => {
       setLoadingFlags((prev) => ({ ...prev, validKey: true }));
       checkAdminKey({ adminKey })
         .then(() => setStoredAdminKey(adminKey))
-        .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+        .catch(alertNoti)
         .finally(() => {
           setLoadingFlags((prev) => ({ ...prev, approve: false }));
         });
     },
-    [setStoredAdminKey, showNoti],
+    [setStoredAdminKey, alertNoti],
   );
 
   const fetchUserList = useCallback(
@@ -47,14 +47,14 @@ export default function AdminPage() {
         .then(setUsers)
         .then(() => setStoredAdminKey(adminKey))
         .catch((err) => {
-          showNoti({ variant: 'alert', title: err.name, content: err.message });
+          alertNoti(err);
           setStoredAdminKey(null);
         })
         .finally(() => {
           setLoadingFlags((prev) => ({ ...prev, list: false }));
         });
     },
-    [showNoti, setStoredAdminKey],
+    [alertNoti, setStoredAdminKey],
   );
 
   useEffect(() => {
@@ -80,12 +80,15 @@ export default function AdminPage() {
           }),
         )
         .then(() => fetchUserList(adminKey))
-        .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+        .catch((err) => {
+          alertNoti(err);
+          setStoredAdminKey(null);
+        })
         .finally(() => {
           setLoadingFlags((prev) => ({ ...prev, approve: false }));
         });
     },
-    [showNoti, showModal, router, fetchUserList],
+    [alertNoti, showModal, setStoredAdminKey, router, fetchUserList],
   );
 
   return (
