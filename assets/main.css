@@ -48,3 +48,7 @@
 @tailwind components;
 
 @tailwind utilities;
+
+#nprogress .bar {
+  @apply bg-teal-600 !important;
+}
