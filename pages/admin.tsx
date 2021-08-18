@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useUI } from '@components/context';
@@ -8,30 +8,58 @@ import Loading from '@components/core/Loading';
 import { approveSignupRequest } from '@lib/approve-signup-request';
 import { momentDate } from '@utils/moment';
 import { DashboardLayout } from '@components/layout';
+import { useAdminKey } from '@lib/hooks/use-admin-key';
 
 import { Unwrap } from 'types';
+import { checkAdminKey } from '@lib/check-admin-key';
 
 export default function AdminPage() {
   const router = useRouter();
 
   const [adminKey, setAdminKey] = useState('');
+  const [storedAdminKey, setStoredAdminKey] = useAdminKey();
   const [users, setUsers] = useState<Unwrap<typeof getSignupRequests> | null>(null);
-  const [loadingFlags, setLoadingFlags] = useState({ list: false, approve: false });
+  const [loadingFlags, setLoadingFlags] = useState({
+    validKey: false,
+    list: false,
+    approve: false,
+  });
 
   const { showNoti, showModal } = useUI();
+
+  const registerAdminKey = useCallback(
+    (adminKey: string) => {
+      setLoadingFlags((prev) => ({ ...prev, validKey: true }));
+      checkAdminKey({ adminKey })
+        .then(() => setStoredAdminKey(adminKey))
+        .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+        .finally(() => {
+          setLoadingFlags((prev) => ({ ...prev, approve: false }));
+        });
+    },
+    [setStoredAdminKey, showNoti],
+  );
 
   const fetchUserList = useCallback(
     (adminKey: string) => {
       setLoadingFlags((prev) => ({ ...prev, list: true }));
       getSignupRequests({ adminKey })
         .then(setUsers)
-        .catch((err) => showNoti({ variant: 'alert', title: err.name, content: err.message }))
+        .then(() => setStoredAdminKey(adminKey))
+        .catch((err) => {
+          showNoti({ variant: 'alert', title: err.name, content: err.message });
+          setStoredAdminKey(null);
+        })
         .finally(() => {
           setLoadingFlags((prev) => ({ ...prev, list: false }));
         });
     },
-    [showNoti],
+    [showNoti, setStoredAdminKey],
   );
+
+  useEffect(() => {
+    if (storedAdminKey) fetchUserList(storedAdminKey);
+  }, [storedAdminKey, fetchUserList]);
 
   const handleApproveById = useCallback(
     (adminKey: string, userId: string, displayName: string) => {
@@ -65,7 +93,7 @@ export default function AdminPage() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          fetchUserList(adminKey);
+          registerAdminKey(adminKey);
         }}
       >
         <label htmlFor="adminKey" className="block text-sm font-medium text-gray-700">
@@ -156,9 +184,11 @@ export default function AdminPage() {
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
                               className="text-teal-600 hover:text-teal-900"
-                              onClick={() =>
-                                handleApproveById(adminKey, _id as string, displayName)
-                              }
+                              disabled={!storedAdminKey}
+                              onClick={() => {
+                                if (!storedAdminKey) return;
+                                handleApproveById(storedAdminKey, _id as string, displayName);
+                              }}
                             >
                               Approve
                             </button>

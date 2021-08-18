@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import NextImage from 'next/image';
 import { useRouter } from 'next/router';
 import cn from 'classnames';
@@ -12,11 +12,13 @@ import {
   RssIcon,
   UsersIcon,
   XIcon,
+  FingerPrintIcon,
 } from '@heroicons/react/outline';
 import { Avatar, Link } from '@components/ui';
 import { useSession } from '@lib/hooks/use-session';
+import { useAdminKey } from '@lib/hooks/use-admin-key';
 
-const navigation = [
+const initialNavigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Users', href: '/user-list', icon: UsersIcon },
   { name: 'Rooms', href: '/rooms', icon: RssIcon },
@@ -29,6 +31,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useSession({ redirectTo: '/signin' });
+  const [adminKey] = useAdminKey();
+
+  const navigation = useMemo(
+    () =>
+      adminKey === null
+        ? initialNavigation
+        : [{ name: 'Admin', href: '/admin', icon: FingerPrintIcon }, ...initialNavigation],
+    [adminKey],
+  );
 
   return (
     <CommonLayout className="h-screen flex overflow-hidden bg-white">
