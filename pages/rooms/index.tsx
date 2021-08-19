@@ -145,7 +145,7 @@ export default function UserListPage() {
   if (!openRooms || !closedRooms) return <Loading />;
 
   return (
-    <div>
+    <div className="pb-12">
       <Title>Rooms</Title>
       <div className="mt-4 flex space-x-2">
         <span>Joined rooms only</span>

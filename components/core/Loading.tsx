@@ -3,7 +3,7 @@ import loadingAnimation from '../../lottie/loading.json';
 
 export default function Loading() {
   return (
-    <div className="w-full h-full flex justify-center items-center text-center">
+    <div className="absolute inset-0 w-full h-full flex justify-center items-center text-center">
       <Lottie animationData={loadingAnimation} className="w-80 h-80" />
     </div>
   );

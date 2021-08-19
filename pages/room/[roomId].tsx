@@ -193,7 +193,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
   if (!room || !games || !user || !scores) return <Loading />;
 
   return (
-    <div>
+    <div className="pb-12">
       <div className="flex justify-between items-center">
         <Title>
           Room - {room.title} ({gameType})
@@ -364,7 +364,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                           <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                             {president.win} / {president.lose}
                             <br />(
-                            {calcWinRatio(president)
+                            {calcWinRatio(president) !== null
                               ? `${calcWinRatio(president)?.toFixed(1)}%`
                               : 'NULL'}
                             )
@@ -372,13 +372,15 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                           <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                             {friend.win} / {friend.lose}
                             <br />(
-                            {calcWinRatio(friend) ? `${calcWinRatio(friend)?.toFixed(1)}%` : 'NULL'}
+                            {calcWinRatio(friend) !== null
+                              ? `${calcWinRatio(friend)?.toFixed(1)}%`
+                              : 'NULL'}
                             )
                           </td>
                           <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                             {opposition.win} / {opposition.lose}
                             <br />(
-                            {calcWinRatio(opposition)
+                            {calcWinRatio(opposition) !== null
                               ? `${calcWinRatio(opposition)?.toFixed(1)}%`
                               : 'NULL'}
                             )
@@ -390,7 +392,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             {calcWinRatio({
                               win: president.win + friend.win + opposition.win,
                               lose: president.lose + friend.lose + opposition.lose,
-                            })
+                            }) !== null
                               ? `${calcWinRatio({
                                   win: president.win + friend.win + opposition.win,
                                   lose: president.lose + friend.lose + opposition.lose,
