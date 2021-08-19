@@ -5,7 +5,7 @@ import { withErrorHandler } from '@utils/with-error-handler';
 import { connectMongo } from '@utils/connect-mongo';
 import { compareId } from '@lib/server/compare-id';
 import { getRoomByQuery } from '@utils/room';
-import { calcScoresByGame } from '@utils/game';
+import { calcScoresByGame } from '@utils/game/calc-scores-by-game';
 
 import { Game } from 'types/game';
 

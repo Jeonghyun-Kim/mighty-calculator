@@ -10,7 +10,6 @@ export type AddNewGameProps = Expand<
 >;
 
 export async function addNewGame(roomId: string, props: AddNewGameProps) {
-  console.log(props);
   const { gameId } = await fetcher(`/api/room/${roomId}/game`, {
     method: 'POST',
     headers: {
