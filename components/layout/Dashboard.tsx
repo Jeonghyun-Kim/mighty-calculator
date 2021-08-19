@@ -226,7 +226,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
       </div>
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full md:overflow-y-auto">
         <div className="md:hidden w-full bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 shadow fixed top-0 z-10">
           <button
             className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
