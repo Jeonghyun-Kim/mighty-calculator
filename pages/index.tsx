@@ -22,6 +22,7 @@ export default function IndexPage() {
         <NextLink href="/signin" passHref>
           <Button
             as="a"
+            type="link"
             color="white"
             onClick={() => (document.cookie = `${COOKIE_KEY_REDIRECT_URL}=/dashboard; Path=/`)}
           >

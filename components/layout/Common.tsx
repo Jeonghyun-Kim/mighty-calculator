@@ -13,8 +13,8 @@ export default function CommonLayout({
   const { modalFlag, modalContent, notiFlag, closeModal, closeNoti, notiContent } = useUI();
 
   return (
-    <div className="relative min-h-full w-full">
-      <main className={cn(className, 'relative')}>{children}</main>
+    <div className="relative h-full w-full">
+      <main className={cn(className, 'relative h-full')}>{children}</main>
 
       <Modal show={modalFlag} close={closeModal} {...modalContent} />
       <Notification show={notiFlag} close={closeNoti} {...notiContent} />

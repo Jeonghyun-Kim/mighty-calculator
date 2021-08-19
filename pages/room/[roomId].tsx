@@ -338,7 +338,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         >
                           <td className="px-4 py-4 whitespace-nowrap">
                             <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
-                              <Avatar size="sm" src={player.profileUrl} />
+                              <div>
+                                <Avatar size="sm" src={player.profileUrl} />
+                              </div>
                               <div className="ml-4 hidden sm:block md:hidden lg:block">
                                 <div className="text-sm font-medium text-gray-900">
                                   {player.displayName}
@@ -480,7 +482,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                     onChange={(e) =>
                       setGameConfig((prev) => ({ ...prev, isNogi: e.target.checked }))
                     }
-                    className="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 rounded"
+                    className="focus:ring-teal-500 h-5 w-5 text-teal-600 border-gray-300 rounded"
                   />
                 </div>
               </div>
@@ -504,7 +506,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                       onChange={(e) =>
                         setGameConfig((prev) => ({ ...prev, isRun: e.target.checked }))
                       }
-                      className="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 rounded"
+                      className="focus:ring-teal-500 h-5 w-5 text-teal-600 border-gray-300 rounded"
                     />
                   </div>
                 </div>

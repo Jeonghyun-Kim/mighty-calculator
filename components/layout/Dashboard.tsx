@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <CommonLayout className="h-screen flex overflow-hidden bg-white">
+    <CommonLayout className="h-full flex bg-white">
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -226,8 +226,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
+      <div className="relative w-full h-full pt-12 md:pt-0">
+        <div className="md:hidden w-full bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 shadow fixed top-0 z-10">
           <button
             className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
             onClick={() => setSidebarOpen(true)}
@@ -236,7 +236,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
+        <main className="relative">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">{children}</div>
           </div>
