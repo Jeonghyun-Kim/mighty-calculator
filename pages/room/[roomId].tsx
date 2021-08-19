@@ -582,7 +582,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center hidden lg:block"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center hidden lg:table-cell"
                         >
                           At
                         </th>
@@ -650,7 +650,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             >
                               {game.win ? 'Y' : 'N'}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:block">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:table-cell">
                               {momentDate(game.createdAt).fromNow()}
                             </td>
                             <td
