@@ -5,6 +5,7 @@ import { DashboardLayout } from '@components/layout';
 import { momentDate } from '@utils/moment';
 
 import { UserInfo } from 'types/user';
+import { Avatar } from '@components/ui';
 
 export default function UserListPage() {
   const { data: users } = useSWR<UserInfo[]>('/api/user/list');
@@ -20,6 +21,12 @@ export default function UserListPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Profile
+                  </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -53,6 +60,11 @@ export default function UserListPage() {
                       key={_id as string}
                       className={userIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                     >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <Avatar size="sm" src={profileUrl} />
+                        </div>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {name}
                       </td>
