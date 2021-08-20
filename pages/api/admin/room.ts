@@ -1,6 +1,5 @@
 import { getRoomByQuery } from '@utils/room';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
 import { compareId } from '@lib/server/compare-id';
@@ -21,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { db } = await connectMongo();
     const rooms = await db
       .collection<Room>('room')
-      .find({ state: 'end', approvedAt: null })
+      .find({ state: 'ended', approvedAt: null, deletedAt: null })
       .sort({ updatedAt: -1 })
       .toArray();
 
