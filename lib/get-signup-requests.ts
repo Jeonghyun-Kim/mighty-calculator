@@ -8,10 +8,9 @@ interface GetSignupRequestsProps {
 }
 
 export async function getSignupRequests({ adminKey }: GetSignupRequestsProps) {
-  const { users } = await fetcher<{ users: Expand<Omit<User, 'password'>>[] }>('/api/admin/user', {
-    method: 'GET',
-    headers: { Authorization: `Kay ${adminKey}` },
-  });
+  const { users } = await fetcher
+    .get('/api/admin/user', { headers: { Authorization: `Kay ${adminKey}` } })
+    .json<{ users: Expand<Omit<User, 'password'>>[] }>();
 
   return users;
 }

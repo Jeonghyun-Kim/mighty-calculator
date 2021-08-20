@@ -19,6 +19,8 @@ NProgress.configure({
   showSpinner: false,
 });
 
+const fetcherJson = async (url: string) => fetcher.get(url).json();
+
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
@@ -39,7 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Script src="/js/redirectIE.js" strategy="beforeInteractive" />
-      <SWRConfig value={{ fetcher }}>
+      <SWRConfig value={{ fetcher: fetcherJson }}>
         <ManagedUIContext>
           <Layout>
             <Component {...pageProps} />

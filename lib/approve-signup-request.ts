@@ -1,4 +1,4 @@
-import { fetcher } from './fetcher';
+import { fetcher } from '@lib/fetcher';
 
 interface ApproveSignupRequestProps {
   adminKey: string;
@@ -6,8 +6,8 @@ interface ApproveSignupRequestProps {
 }
 
 export async function approveSignupRequest({ adminKey, userId }: ApproveSignupRequestProps) {
-  await fetcher(`/api/admin/user?userId=${userId}`, {
-    method: 'POST',
+  await fetcher.post(`/api/admin/user`, {
+    searchParams: { userId },
     headers: { Authorization: `Kay ${adminKey}` },
   });
 }

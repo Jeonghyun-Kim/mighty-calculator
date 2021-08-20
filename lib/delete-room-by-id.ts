@@ -6,8 +6,8 @@ interface DeleteRoomByIdProps {
 }
 
 export async function deleteRoomById({ adminKey, roomId }: DeleteRoomByIdProps) {
-  await fetcher(`/api/admin/room?roomId=${roomId}`, {
-    method: 'DELETE',
+  await fetcher.delete('/api/admin/room', {
+    searchParams: { roomId },
     headers: { Authorization: `Kay ${adminKey}` },
   });
 }

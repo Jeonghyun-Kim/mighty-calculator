@@ -36,9 +36,13 @@ export default function ProfilePage() {
     try {
       setLoading(true);
 
-      const { url, fields } = await fetcher<{ url: string; fields: { [key: string]: string } }>(
-        `/api/aws/presigned-post?key=${file.name}`,
-      );
+      // const { url, fields } = await fetcher<{ url: string; fields: { [key: string]: string } }>(
+      //   `/api/aws/presigned-post?key=${file.name}`,
+      // );
+
+      const { url, fields } = await fetcher
+        .get('/api/aws/presigned-post', { searchParams: { key: file.name } })
+        .json<{ url: string; fields: { [key: string]: string } }>();
 
       const formData = new FormData();
       Object.entries({ ...fields }).forEach(([key, value]) => {
@@ -59,10 +63,11 @@ export default function ProfilePage() {
         throw new Error(await response.text());
       }
 
-      await fetcher(`/api/aws/presigned-post?key=${file.name}`, { method: 'POST' });
+      // await fetcher(`/api/aws/presigned-post?key=${file.name}`, { method: 'POST' });
+      // await fetcher(`/api/user/profile?key=${file.name}`, { method: 'POST' });
 
-      // combine that use ky?
-      await fetcher(`/api/user/profile?key=${file.name}`, { method: 'POST' });
+      await fetcher.post('/api/aws/presigned-post', { searchParams: { key: file.name } });
+      await fetcher.post('/api/user/profile', { searchParams: { key: file.name } });
       mutate();
 
       setPreviewUrl('');

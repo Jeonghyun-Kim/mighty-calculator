@@ -10,13 +10,9 @@ export type AddNewGameProps = Expand<
 >;
 
 export async function addNewGame(roomId: string, props: AddNewGameProps) {
-  const { gameId } = await fetcher(`/api/room/${roomId}/game`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(props),
-  });
+  const { gameId } = await fetcher
+    .post(`/api/room/${roomId}/game`, { json: props })
+    .json<{ gameId: string }>();
 
   return gameId;
 }

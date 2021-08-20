@@ -6,8 +6,8 @@ interface ApproveRoomByIdProps {
 }
 
 export async function approveRoomById({ adminKey, roomId }: ApproveRoomByIdProps) {
-  await fetcher(`/api/admin/room?roomId=${roomId}`, {
-    method: 'POST',
+  await fetcher.post('/api/admin/room', {
+    searchParams: { roomId },
     headers: { Authorization: `Kay ${adminKey}` },
   });
 }

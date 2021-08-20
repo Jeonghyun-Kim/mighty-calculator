@@ -5,5 +5,5 @@ interface CheckAdminKeyProps {
 }
 
 export async function checkAdminKey({ adminKey }: CheckAdminKeyProps) {
-  await fetcher('/api/admin', { headers: { Authorization: `Kay ${adminKey}` } });
+  await fetcher.get('/api/admin', { headers: { Authorization: `Kay ${adminKey}` } });
 }

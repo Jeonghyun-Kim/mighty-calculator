@@ -1,4 +1,5 @@
 import { fetcher } from '@lib/fetcher';
+
 import { Room } from 'types/room';
 
 interface GetEndedRoomsProps {
@@ -6,9 +7,11 @@ interface GetEndedRoomsProps {
 }
 
 export async function getEndedRooms({ adminKey }: GetEndedRoomsProps) {
-  const { rooms } = await fetcher<{ rooms: Room[] }>('/api/admin/room', {
-    headers: { Authorization: `Kay ${adminKey}` },
-  });
+  const { rooms } = await fetcher
+    .get('/api/admin/room', {
+      headers: { Authorization: `Kay ${adminKey}` },
+    })
+    .json<{ rooms: Room[] }>();
 
   return rooms;
 }
