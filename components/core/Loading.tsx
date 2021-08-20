@@ -1,5 +1,5 @@
 import Lottie from 'lottie-react';
-import loadingAnimation from '../../lottie/loading.json';
+import loadingAnimation from '../../lottie/rocket.json';
 
 export default function Loading() {
   return (

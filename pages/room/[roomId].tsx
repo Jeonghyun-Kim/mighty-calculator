@@ -2,7 +2,7 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 import { ObjectId } from 'mongodb';
 import cn from 'classnames';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 import { DashboardLayout } from '@components/layout';
 import { connectMongo } from '@utils/connect-mongo';
@@ -10,7 +10,7 @@ import { connectMongo } from '@utils/connect-mongo';
 import { Room } from 'types/room';
 import { useSession } from '@lib/hooks/use-session';
 import { Loading, Title } from '@components/core';
-import { Game, GameType } from 'types/game';
+import { Game } from 'types/game';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUI } from '@components/context';
 import { closeRoomById } from '@lib/close-room-by-id';
@@ -111,7 +111,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
         label: 'Close',
         onClick: () => {
           closeRoomById(room._id as string)
-            .then(() => mutate('/api/room'))
+            .then(() => mutateRoom())
             .catch(alertNoti);
         },
       },
@@ -120,7 +120,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
         onClick: () => {},
       },
     });
-  }, [room, user, showModal, alertNoti]);
+  }, [room, user, showModal, alertNoti, mutateRoom]);
 
   const handleAddNewGame = useCallback(
     (presidentWin: boolean) => {
