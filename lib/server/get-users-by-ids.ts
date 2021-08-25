@@ -1,4 +1,4 @@
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { isBrowser } from '@utils/is-browser';
 import { ObjectId } from 'mongodb';
 import { User, UserInfo } from 'types/user';

@@ -3,7 +3,7 @@ import Joi, { ValidationError } from 'joi';
 
 import { createError } from '@defines/errors';
 import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { verifySession } from '@lib/server/verify-session';
 import { getRoomByQuery } from '@utils/room';
 import { getUserInfoById } from '@utils/user';

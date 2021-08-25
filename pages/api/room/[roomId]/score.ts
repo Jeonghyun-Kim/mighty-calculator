@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { verifySession } from '@lib/server/verify-session';
 import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { compareId } from '@lib/server/compare-id';
 import { getRoomByQuery } from '@utils/room';
 import { calcScoresByGame } from '@utils/game/calc-scores-by-game';

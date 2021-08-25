@@ -6,7 +6,7 @@ import { compareId } from '@lib/server/compare-id';
 import { getGamesByRoomId } from '@utils/game';
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifyAdminKey } from '@lib/server/verify-admin-key';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 import { calcStatsByGame } from '@utils/game/calc-stats-by-game';
 

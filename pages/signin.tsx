@@ -13,8 +13,8 @@ import { isBrowser } from '@utils/is-browser';
 
 export function useEmail() {
   const { data: email, mutate: setEmail } = useSWR('email', {
+    fallbackData: '',
     fetcher: undefined,
-    initialData: '',
   });
 
   return [email || '', setEmail] as const;

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 import Joi, { ValidationError } from 'joi';
 
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 import { isValidId } from '@lib/is-valid-id';
 

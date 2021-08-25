@@ -3,7 +3,7 @@ import { KeyedMutator } from 'swr/dist/types';
 
 export function useAdminKey(): [string | null, KeyedMutator<string | null>] {
   const { data: adminKey, mutate: setAdminKey } = useSWR<string | null>('@adminKey', {
-    initialData: null,
+    fallbackData: null,
     fetcher: undefined,
   });
 

@@ -5,7 +5,7 @@ import { serialize } from 'cookie';
 
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 import { signToken } from '@utils/jsonwebtoken';
 import { ACCESS_TOKEN_EXPIRES_IN } from '@defines/token';

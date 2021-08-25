@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 
 import { User } from 'types/user';
 

@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifyAdminKey } from '@lib/server/verify-admin-key';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 
 import { User } from 'types/user';

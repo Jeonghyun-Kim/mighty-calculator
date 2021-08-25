@@ -5,7 +5,7 @@ import cn from 'classnames';
 import useSWR from 'swr';
 
 import { DashboardLayout } from '@components/layout';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 
 import { Room } from 'types/room';
 import { useSession } from '@lib/hooks/use-session';

@@ -5,7 +5,7 @@ import Joi, { ValidationError } from 'joi';
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { isValidId } from '@lib/is-valid-id';
 
 import { Room } from 'types/room';

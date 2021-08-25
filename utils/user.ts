@@ -1,7 +1,7 @@
 import type { NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 
 import { User, UserInfo } from 'types/user';

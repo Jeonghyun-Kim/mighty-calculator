@@ -4,7 +4,7 @@ import Joi, { ValidationError } from 'joi';
 import { verifySession } from '@lib/server/verify-session';
 import { createError } from '@defines/errors';
 import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { getUserInfoById } from '@utils/user';
 import { compareId } from '@lib/server/compare-id';
 import { isValidId } from '@lib/is-valid-id';

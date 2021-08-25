@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 import { withErrorHandler } from '@utils/with-error-handler';
 import { verifySession } from '@lib/server/verify-session';
-import { connectMongo } from '@utils/connect-mongo';
+import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 import { SALT_ROUND } from '@defines/bcrypt';
 
