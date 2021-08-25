@@ -8,9 +8,6 @@ if (!mongoUri) {
 
 const options: MongoClientOptions = {
   ignoreUndefined: true,
-  maxIdleTimeMS: 5000,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 10000,
 };
 
 interface GlobalWithMongoClient extends NodeJS.Global {
@@ -26,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
   if (!(global as GlobalWithMongoClient)._mongoClientPromise) {
     client = new MongoClient(mongoUri, options);
     (global as GlobalWithMongoClient)._mongoClientPromise = client.connect();
+    console.log('created a new connection');
   }
   clientPromise = (global as GlobalWithMongoClient)._mongoClientPromise!;
 } else {

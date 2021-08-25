@@ -9,12 +9,12 @@ import { approveSignupRequest } from '@lib/approve-signup-request';
 import { momentDate } from '@utils/moment';
 import { DashboardLayout } from '@components/layout';
 import { useAdminKey } from '@lib/hooks/use-admin-key';
-
-import { Unwrap } from 'types';
 import { checkAdminKey } from '@lib/check-admin-key';
 import { getEndedRooms } from '@lib/get-ended-rooms';
 import { approveRoomById } from '@lib/approve-room-by-id';
 import { deleteRoomById } from '@lib/delete-room-by-id';
+
+import { Unwrap } from 'types';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -167,30 +167,46 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-screen-lg mx-auto py-8 px-4">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          registerAdminKey(adminKey);
-        }}
-      >
-        <label htmlFor="adminKey" className="block text-sm font-medium text-gray-700">
-          Admin Key
-        </label>
-        <div className="mt-1 flex space-x-2">
-          <input
-            type="password"
-            name="adminKey"
-            id="adminKey"
-            className="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md flex-1"
-            placeholder="SECRET KEY"
-            value={adminKey}
-            onChange={(e) => setAdminKey(e.target.value)}
-          />
-          <Button type="submit" size="sm">
-            Submit
+      {!storedAdminKey ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            registerAdminKey(adminKey);
+          }}
+        >
+          <label htmlFor="adminKey" className="block text-sm font-medium text-gray-700">
+            Admin Key
+          </label>
+          <div className="mt-1 flex space-x-2">
+            <input
+              type="password"
+              name="adminKey"
+              id="adminKey"
+              className="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md flex-1"
+              placeholder="SECRET KEY"
+              value={adminKey}
+              onChange={(e) => setAdminKey(e.target.value)}
+            />
+            <Button type="submit" size="sm">
+              Submit
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <div>
+          <Button
+            color="red"
+            onClick={() => {
+              setStoredAdminKey(null);
+              setAdminKey('');
+              setUsers(null);
+              setRooms(null);
+            }}
+          >
+            Clear Key
           </Button>
         </div>
-      </form>
+      )}
 
       {users === null || rooms === null ? (
         // Initial state. (without adminKey)
