@@ -1,5 +1,10 @@
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
+// import Lottie from 'lottie-react';
 import loadingAnimation from '../../lottie/rocket.json';
+// const loadingAnimation = dynamic(() => import('../../lottie/rocket.json') as any, { ssr: false });
+const Lottie = dynamic(() => import('lottie-react') as never, {
+  loading: ({}) => (<p>loading...</p>) as never,
+}) as any;
 
 export default function Loading() {
   return (
