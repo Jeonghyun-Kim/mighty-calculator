@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'POST') {
     const userSchema = Joi.object({
-      name: Joi.string().min(3).max(10).required(),
+      name: Joi.string().min(2).max(10).required(),
       displayName: Joi.string().min(3).max(20),
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(30).required(),

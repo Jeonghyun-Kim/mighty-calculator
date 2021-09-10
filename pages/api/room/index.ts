@@ -18,7 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const rooms = await db
       .collection<Room>('room')
-      .find({ deletedAt: null }, { projection: { deletedAt: 0 } })
+      .find({ deletedAt: null })
+      .project({ deletedAt: 0 })
       .sort({ createdAt: -1 })
       .toArray();
 
