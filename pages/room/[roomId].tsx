@@ -562,7 +562,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         >
                           Friend
                         </th>
-                        <th
+                        {/* <th
                           scope="col"
                           className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
                         >
@@ -579,6 +579,12 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                           className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
                         >
                           Win
+                        </th> */}
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                        >
+                          Summary
                         </th>
                         <th
                           scope="col"
@@ -626,7 +632,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 </div>
                               </div>
                             </td>
-                            <td
+                            {/* <td
                               className={cn(
                                 'px-4 py-4 whitespace-nowrap text-sm text-center',
                                 game.isNogi ? 'text-teal-500' : 'text-red-500',
@@ -649,6 +655,30 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                               )}
                             >
                               {game.win ? 'Y' : 'N'}
+                            </td> */}
+                            <td
+                              className={cn(
+                                'px-4 py-4 whitespace-nowrap text-sm text-center',
+                                // game.win ? 'text-teal-500' : 'text-red-500',
+                                {
+                                  'font-extrabold': game.isRun,
+                                  'text-teal-500': game.win && !game.isNogi,
+                                  'text-red-500': !game.win && !game.isNogi,
+                                  'text-teal-700': game.win && game.isNogi,
+                                  'text-red-700': !game.win && game.isNogi,
+                                },
+                              )}
+                            >
+                              {game.isNogi ? '노기루 ' : ''}
+                              {(() => {
+                                if (game.win) {
+                                  if (game.isRun) return '런';
+                                  return '일반 승리';
+                                }
+                                if (game.isRun) return '백런';
+                                return '일반 패배';
+                              })()}
+                              {game._presidentId === game._friendId && ' (노프)'}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:table-cell">
                               {momentDate(game.createdAt).fromNow()}
