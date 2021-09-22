@@ -17,7 +17,7 @@ export function useEmail() {
     fetcher: undefined,
   });
 
-  return [email || '', setEmail] as const;
+  return [email!, setEmail] as const;
 }
 
 export default function SinginPage() {
