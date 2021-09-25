@@ -55,6 +55,8 @@
     "eslint": "7.29.0",
     "eslint-config-next": "11.1.0",
     "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-import": "2.24.2",
+    "eslint-plugin-unused-imports": "1.1.5",
     "postcss": "8.3.6",
     "postcss-focus-visible": "5.0.0",
     "prettier": "2.3.1",

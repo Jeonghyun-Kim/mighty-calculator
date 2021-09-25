@@ -1,16 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 
-import { verifySession } from '@lib/server/verify-session';
 import { createError } from '@defines/errors';
-import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/mongodb/connect';
-import { getUsersByIds } from '@lib/server/get-users-by-ids';
-import { getGameByQuery } from '@utils/game';
-import { getRoomById } from '@utils/room';
+
 import { isParticipant } from '@lib/is-participant';
+import { getUsersByIds } from '@lib/server/get-users-by-ids';
+import { verifySession } from '@lib/server/verify-session';
+
+import { getGameByQuery } from '@utils/game';
+import { connectMongo } from '@utils/mongodb/connect';
+import { getRoomById } from '@utils/room';
+import { withErrorHandler } from '@utils/with-error-handler';
 
 import { Game, gameSchema } from 'types/game';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const game = await getGameByQuery(req, res);

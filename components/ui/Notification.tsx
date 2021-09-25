@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
-import cn from 'classnames';
 import { Transition } from '@headlessui/react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
+import cn from 'classnames';
+import { Fragment } from 'react';
 
 interface NotificationProps {
   variant?: 'default' | 'alert';

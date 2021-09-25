@@ -1,5 +1,3 @@
-import { Expand } from 'types';
-
 export type Stat = {
   win: number;
   lose: number;

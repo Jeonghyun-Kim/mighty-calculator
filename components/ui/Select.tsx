@@ -1,8 +1,7 @@
-import { Fragment, useCallback } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import cn from 'classnames';
-
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
+import cn from 'classnames';
+import { Fragment, useCallback } from 'react';
 
 type SelectItem<TType> = {
   key: string;

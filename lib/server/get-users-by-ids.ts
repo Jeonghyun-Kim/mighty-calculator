@@ -1,6 +1,8 @@
-import { connectMongo } from '@utils/mongodb/connect';
-import { isBrowser } from '@utils/is-browser';
 import { ObjectId } from 'mongodb';
+
+import { isBrowser } from '@utils/is-browser';
+import { connectMongo } from '@utils/mongodb/connect';
+
 import { User, UserInfo } from 'types/user';
 
 export async function getUsersByIds(userIds: (OurId | undefined | null)[]) {

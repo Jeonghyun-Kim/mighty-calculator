@@ -2,8 +2,9 @@ import useSWR from 'swr';
 
 import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
-import { momentDate } from '@utils/moment';
 import { Avatar } from '@components/ui';
+
+import { momentDate } from '@utils/moment';
 
 import { UserInfo } from 'types/user';
 

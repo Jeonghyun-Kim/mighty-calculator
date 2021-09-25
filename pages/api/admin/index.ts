@@ -1,7 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { verifyAdminKey } from '@lib/server/verify-admin-key';
 
 import { withErrorHandler } from '@utils/with-error-handler';
-import { verifyAdminKey } from '@lib/server/verify-admin-key';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

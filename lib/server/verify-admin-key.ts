@@ -1,5 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { createError } from '@defines/errors';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export function verifyAdminKey(req: NextApiRequest, res: NextApiResponse) {
   const authorization = req.headers.authorization;

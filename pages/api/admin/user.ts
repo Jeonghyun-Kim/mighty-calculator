@@ -1,13 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
-import { withErrorHandler } from '@utils/with-error-handler';
-import { verifyAdminKey } from '@lib/server/verify-admin-key';
-import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 
+import { verifyAdminKey } from '@lib/server/verify-admin-key';
+
+import { connectMongo } from '@utils/mongodb/connect';
+import { withErrorHandler } from '@utils/with-error-handler';
+
 import { User } from 'types/user';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

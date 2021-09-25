@@ -1,5 +1,5 @@
-import NextImage from 'next/image';
 import cn from 'classnames';
+import NextImage from 'next/image';
 
 // const AVATAR_SIZES = [{key: 'sm', size: 32 }, { key: 'base', size: 40 } , {key: 'lg', size: 48}] as const;
 const AVATAR_SIZES = ['sm', 'base', 'lg'] as const;

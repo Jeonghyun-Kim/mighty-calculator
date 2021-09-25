@@ -1,10 +1,12 @@
-import type { NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 
-import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
 
+import { connectMongo } from '@utils/mongodb/connect';
+
 import { User, UserInfo } from 'types/user';
+
+import type { NextApiResponse } from 'next';
 
 export async function getUserInfoById(res: NextApiResponse, userId: OurId) {
   const { db } = await connectMongo();

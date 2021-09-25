@@ -1,5 +1,6 @@
-import { createError } from '@defines/errors';
 import jwt from 'jsonwebtoken';
+
+import { createError } from '@defines/errors';
 
 const JWT_ALGORITHM = 'HS512';
 const JWT_SECRET = process.env.JWT_SECRET;

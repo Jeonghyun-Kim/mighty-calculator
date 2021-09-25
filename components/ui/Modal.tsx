@@ -1,7 +1,7 @@
-import { Fragment, useRef } from 'react';
-import cn from 'classnames';
 import { Dialog, Transition } from '@headlessui/react';
 import { CheckIcon, ExclamationIcon } from '@heroicons/react/outline';
+import cn from 'classnames';
+import { Fragment, useRef } from 'react';
 
 interface ModalProps {
   show: boolean;

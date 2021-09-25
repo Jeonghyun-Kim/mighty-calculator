@@ -1,14 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import Joi from 'joi';
 import bcrypt from 'bcrypt';
+import Joi from 'joi';
 
-import { withErrorHandler } from '@utils/with-error-handler';
-import { verifySession } from '@lib/server/verify-session';
-import { connectMongo } from '@utils/mongodb/connect';
-import { createError } from '@defines/errors';
 import { SALT_ROUND } from '@defines/bcrypt';
+import { createError } from '@defines/errors';
+
+import { verifySession } from '@lib/server/verify-session';
+
+import { connectMongo } from '@utils/mongodb/connect';
+import { withErrorHandler } from '@utils/with-error-handler';
 
 import { User } from 'types/user';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

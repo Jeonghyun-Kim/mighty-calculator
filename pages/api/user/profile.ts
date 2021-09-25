@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { verifySession } from '@lib/server/verify-session';
+
 import { connectMongo } from '@utils/mongodb/connect';
 import { withErrorHandler } from '@utils/with-error-handler';
 

@@ -1,17 +1,20 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import Joi, { ValidationError } from 'joi';
 
 import { createError } from '@defines/errors';
-import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/mongodb/connect';
+
+import { isParticipant } from '@lib/is-participant';
+import { isValidId } from '@lib/is-valid-id';
+import { compareId } from '@lib/server/compare-id';
 import { verifySession } from '@lib/server/verify-session';
+
+import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomByQuery } from '@utils/room';
 import { getUserInfoById } from '@utils/user';
-import { compareId } from '@lib/server/compare-id';
-import { isValidId } from '@lib/is-valid-id';
-import { isParticipant } from '@lib/is-participant';
+import { withErrorHandler } from '@utils/with-error-handler';
 
 import { Room } from 'types/room';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const querySchema = Joi.object({

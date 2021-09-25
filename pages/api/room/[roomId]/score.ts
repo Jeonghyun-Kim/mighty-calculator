@@ -1,13 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-import { verifySession } from '@lib/server/verify-session';
-import { withErrorHandler } from '@utils/with-error-handler';
-import { connectMongo } from '@utils/mongodb/connect';
 import { compareId } from '@lib/server/compare-id';
-import { getRoomByQuery } from '@utils/room';
+import { verifySession } from '@lib/server/verify-session';
+
 import { calcScoresByGame } from '@utils/game/calc-scores-by-game';
+import { connectMongo } from '@utils/mongodb/connect';
+import { getRoomByQuery } from '@utils/room';
+import { withErrorHandler } from '@utils/with-error-handler';
 
 import { Game } from 'types/game';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const room = await getRoomByQuery(req, res);

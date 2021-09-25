@@ -1,16 +1,18 @@
 import '@assets/main.css';
 import 'nprogress/nprogress.css';
 
-import { useEffect } from 'react';
-import type { AppProps } from 'next/app';
-import Script from 'next/script';
 import { useRouter } from 'next/router';
-import { SWRConfig } from 'swr';
+import Script from 'next/script';
 import NProgress from 'nprogress';
+import { useEffect } from 'react';
+import { SWRConfig } from 'swr';
 
 import ManagedUIContext from '@components/context';
 import { CommonLayout } from '@components/layout';
+
 import { fetcher } from '@lib/fetcher';
+
+import type { AppProps } from 'next/app';
 
 NProgress.configure({
   minimum: 0.3,

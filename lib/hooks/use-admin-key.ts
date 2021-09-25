@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
+
 import type { KeyedMutator } from 'swr/dist/types';
 
 const ADMIN_KEY = '@adminKey' as const;

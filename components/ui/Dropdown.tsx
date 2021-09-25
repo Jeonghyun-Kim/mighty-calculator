@@ -1,6 +1,6 @@
-import { Fragment, ReactNode } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import cn from 'classnames';
+import { Fragment, ReactNode } from 'react';
 
 interface DropdownItem {
   icon?: ReactNode;

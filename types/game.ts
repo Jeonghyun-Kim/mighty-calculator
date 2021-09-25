@@ -1,4 +1,5 @@
 import Joi from 'joi';
+
 import { Expand } from 'types';
 
 export const GAME_TYPES = ['5M', '6M'] as const;

@@ -1,17 +1,18 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
-import useSWR, { mutate } from 'swr';
 import cn from 'classnames';
+import { useRouter } from 'next/router';
+import { useCallback, useMemo, useState } from 'react';
+import useSWR, { mutate } from 'swr';
 
-import { DashboardLayout } from '@components/layout';
-import { Loading, Title } from '@components/core';
-import { Avatar, Button, Link, Toggle } from '@components/ui';
 import { useUI } from '@components/context';
+import { Loading, Title } from '@components/core';
+import { DashboardLayout } from '@components/layout';
+import { Avatar, Button, Link, Toggle } from '@components/ui';
 
-import { momentDate } from '@utils/moment';
+import { closeRoomById } from '@lib/close-room-by-id';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
-import { closeRoomById } from '@lib/close-room-by-id';
+
+import { momentDate } from '@utils/moment';
 
 import { Room } from 'types/room';
 

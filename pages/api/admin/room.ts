@@ -1,17 +1,20 @@
-import { getRoomByQuery } from '@utils/room';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 
-import { compareId } from '@lib/server/compare-id';
-import { getGamesByRoomId } from '@utils/game';
-import { withErrorHandler } from '@utils/with-error-handler';
-import { verifyAdminKey } from '@lib/server/verify-admin-key';
-import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
-import { calcStatsByGame } from '@utils/game/calc-stats-by-game';
 
-import { User } from 'types/user';
+import { compareId } from '@lib/server/compare-id';
+import { verifyAdminKey } from '@lib/server/verify-admin-key';
+
+import { getGamesByRoomId } from '@utils/game';
+import { calcStatsByGame } from '@utils/game/calc-stats-by-game';
+import { connectMongo } from '@utils/mongodb/connect';
+import { getRoomByQuery } from '@utils/room';
+import { withErrorHandler } from '@utils/with-error-handler';
+
 import { Room } from 'types/room';
+import { User } from 'types/user';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

@@ -1,8 +1,9 @@
-import type { NextApiHandler } from 'next';
 import Joi from 'joi';
 import { isResSent } from 'next/dist/shared/lib/utils';
 
 import { createError, isCustomError } from '@defines/errors';
+
+import type { NextApiHandler } from 'next';
 
 export function withErrorHandler(handler: NextApiHandler) {
   const wrappedHandler: NextApiHandler = async (req, res) => {

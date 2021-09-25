@@ -1,12 +1,15 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
 import Joi, { ValidationError } from 'joi';
+import { ObjectId } from 'mongodb';
 
-import { connectMongo } from '@utils/mongodb/connect';
 import { createError } from '@defines/errors';
+
 import { isValidId } from '@lib/is-valid-id';
 
+import { connectMongo } from '@utils/mongodb/connect';
+
 import { Room } from 'types/room';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export async function getRoomByQuery(req: NextApiRequest, res: NextApiResponse) {
   const querySchema = Joi.object({ roomId: Joi.string().hex().length(24).required() });

@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import cn from 'classnames';
+import { useState } from 'react';
 
 import { useUI } from '@components/context';
 

@@ -1,15 +1,18 @@
-import { useCallback, useState } from 'react';
+import { LockClosedIcon } from '@heroicons/react/outline';
+import cookie from 'cookie';
 import NextImage from 'next/image';
 import { useRouter } from 'next/router';
-import cookie from 'cookie';
+import { useCallback, useState } from 'react';
 
-import { LockClosedIcon } from '@heroicons/react/outline';
-import { Button, Link } from '@components/ui';
-import { useSession } from '@lib/hooks/use-session';
 import { useUI } from '@components/context';
+import { Button, Link } from '@components/ui';
+
 import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
-import { isBrowser } from '@utils/is-browser';
+
+import { useSession } from '@lib/hooks/use-session';
 import { signupLocal, SignupLocalProps } from '@lib/signup-local';
+
+import { isBrowser } from '@utils/is-browser';
 
 import { useEmail } from './signin';
 

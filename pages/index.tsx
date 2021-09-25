@@ -1,8 +1,10 @@
 import NextLink from 'next/link';
 
 import { Button } from '@components/ui';
-import { useSession } from '@lib/hooks/use-session';
+
 import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
+
+import { useSession } from '@lib/hooks/use-session';
 
 export default function IndexPage() {
   useSession({ redirectTo: '/dashboard', redirectIfFound: true });

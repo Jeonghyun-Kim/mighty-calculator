@@ -1,27 +1,30 @@
-import type { GetStaticPaths, GetStaticProps } from 'next';
-import type { ParsedUrlQuery } from 'querystring';
-import { ObjectId } from 'mongodb';
+import { XIcon } from '@heroicons/react/outline';
 import cn from 'classnames';
+import { ObjectId } from 'mongodb';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-import { DashboardLayout } from '@components/layout';
-import { connectMongo } from '@utils/mongodb/connect';
-
-import { Room } from 'types/room';
-import { useSession } from '@lib/hooks/use-session';
-import { Loading, Title } from '@components/core';
-import { Game } from 'types/game';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUI } from '@components/context';
-import { closeRoomById } from '@lib/close-room-by-id';
+import { Loading, Title } from '@components/core';
+import { DashboardLayout } from '@components/layout';
 import { Avatar, Button, Dropdown, Select } from '@components/ui';
-import { transferDealerTo } from '@lib/transfer-dealer-to';
+
 import { addNewGame } from '@lib/add-new-game';
-import { XIcon } from '@heroicons/react/outline';
+import { closeRoomById } from '@lib/close-room-by-id';
 import { deleteGameById } from '@lib/delete-game-by-id';
-import { UserInfo } from 'types/user';
+import { useSession } from '@lib/hooks/use-session';
+import { transferDealerTo } from '@lib/transfer-dealer-to';
+
 import { calcScoresByGame } from '@utils/game/calc-scores-by-game';
 import { momentDate } from '@utils/moment';
+import { connectMongo } from '@utils/mongodb/connect';
+
+import { Game } from 'types/game';
+import { Room } from 'types/room';
+import { UserInfo } from 'types/user';
+
+import type { GetStaticPaths, GetStaticProps } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
 
 interface UserScore {
   user: UserInfo;

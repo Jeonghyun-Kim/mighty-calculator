@@ -1,6 +1,7 @@
+import { Expand } from 'types';
+
 import { fetcher } from '@lib/fetcher';
 
-import { Expand } from 'types';
 import { Game } from 'types/game';
 
 export type AddNewGameProps = Expand<

@@ -7,9 +7,9 @@ import { DashboardLayout } from '@components/layout';
 import { Button } from '@components/ui';
 import DragDrop from '@components/ui/DragDrop';
 
+import { fetcher } from '@lib/fetcher';
 import { useSession } from '@lib/hooks/use-session';
 import { updateDisplayName } from '@lib/update-display-name';
-import { fetcher } from '@lib/fetcher';
 
 import 'cropperjs/dist/cropper.css';
 
