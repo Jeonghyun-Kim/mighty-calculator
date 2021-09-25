@@ -301,6 +301,17 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                       </th>
                       <th
                         scope="col"
+                        className={cn(
+                          'px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center hidden',
+                          {
+                            'lg:table-cell': user._id === room.dealer._id && isOpen,
+                          },
+                        )}
+                      >
+                        Action
+                      </th>
+                      <th
+                        scope="col"
                         className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center"
                       >
                         Score
@@ -351,6 +362,38 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 <div className="text-sm text-gray-500">{player.name}</div>
                               </div>
                             </div>
+                          </td>
+                          <td
+                            className={cn(
+                              'px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden',
+                              {
+                                'lg:table-cell': user._id === room.dealer._id && isOpen,
+                              },
+                            )}
+                          >
+                            {gameType === '6M' && _diedId === null ? (
+                              <button onClick={() => setDiedId(player._id as string)}>Died</button>
+                            ) : _presidentId === null ? (
+                              <button
+                                onClick={() => setPresidentId(player._id as string)}
+                                className={cn({
+                                  hidden: gameType === '6M' && _diedId === player._id,
+                                })}
+                              >
+                                President
+                              </button>
+                            ) : _friendId === null ? (
+                              <button
+                                onClick={() => setFriendId(player._id as string)}
+                                className={cn({
+                                  hidden: gameType === '6M' && _diedId === player._id,
+                                })}
+                              >
+                                Friend{_presidentId === player._id ? ' (NF)' : ''}
+                              </button>
+                            ) : (
+                              <span>Done</span>
+                            )}
                           </td>
                           <td
                             className={cn(
@@ -426,9 +469,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
               className={cn({ hidden: room.participants.length !== 6 })}
               items={[
                 { key: 'died-null', label: 'Not Selected', value: null },
-                ...room.participants.map(({ _id, displayName }) => ({
+                ...room.participants.map(({ _id, name }) => ({
                   key: `died-${_id}`,
-                  label: displayName,
+                  label: name,
                   value: _id,
                 })),
               ]}
@@ -441,9 +484,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                 { key: 'president-null', label: 'Not Selected', value: null },
                 ...room.participants
                   .filter(({ _id }) => _id !== _diedId)
-                  .map(({ _id, displayName }) => ({
+                  .map(({ _id, name }) => ({
                     key: `president-${_id}`,
-                    label: displayName,
+                    label: name,
                     value: _id,
                   })),
               ]}
@@ -458,9 +501,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                 ...room.participants
                   .filter(({ _id }) => _id !== _diedId)
                   // .filter(({ _id }) => _id !== _presidentId)
-                  .map(({ _id, displayName }) => ({
+                  .map(({ _id, name }) => ({
                     key: `friend-${_id}`,
-                    label: _id === _presidentId ? `${displayName} - (NF)` : displayName,
+                    label: _id === _presidentId ? `${name} - (NF)` : name,
                     value: _id,
                   })),
               ]}
@@ -565,6 +608,17 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         >
                           Friend
                         </th>
+                        <th
+                          scope="col"
+                          className={cn(
+                            'px-4 py-3 text-center sm:text-left md:text-center lg:text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            {
+                              hidden: gameType === '5M',
+                            },
+                          )}
+                        >
+                          Died
+                        </th>
                         {/* <th
                           scope="col"
                           className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
@@ -611,6 +665,12 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                           ({ _id }) => _id === game._presidentId,
                         )!;
                         const friend = room.participants.find(({ _id }) => _id === game._friendId)!;
+                        const died = room.participants.find(
+                          ({ _id }) =>
+                            [game._presidentId, game._friendId, ...game._oppositionIds].indexOf(
+                              _id,
+                            ) === -1,
+                        )!;
                         return (
                           <tr key={game._id as string}>
                             <td className="px-4 py-4 whitespace-nowrap">
@@ -632,6 +692,21 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                     {friend.displayName}
                                   </div>
                                   <div className="text-sm text-gray-500">{friend.name}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td
+                              className={cn('px-4 py-4 whitespace-nowrap', {
+                                hidden: gameType === '5M',
+                              })}
+                            >
+                              <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
+                                <Avatar size="sm" src={died.profileUrl} />
+                                <div className="ml-4 hidden sm:block md:hidden lg:block">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {died.displayName}
+                                  </div>
+                                  <div className="text-sm text-gray-500">{died.name}</div>
                                 </div>
                               </div>
                             </td>
