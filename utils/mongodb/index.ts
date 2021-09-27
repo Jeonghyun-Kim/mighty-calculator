@@ -10,7 +10,7 @@ const options: MongoClientOptions = {
   ignoreUndefined: true,
 };
 
-interface GlobalWithMongoClient extends NodeJS.Global {
+interface GlobalWithMongoClient {
   _mongoClientPromise?: Promise<MongoClient>;
 }
 
