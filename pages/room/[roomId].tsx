@@ -695,21 +695,19 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 </div>
                               </div>
                             </td>
-                            <td
-                              className={cn('px-4 py-4 whitespace-nowrap', {
-                                hidden: gameType === '5M',
-                              })}
-                            >
-                              <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
-                                <Avatar size="sm" src={died.profileUrl} />
-                                <div className="ml-4 hidden sm:block md:hidden lg:block">
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {died.displayName}
+                            {gameType === '6M' && (
+                              <td className="px-4 py-4 whitespace-nowrap">
+                                <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
+                                  <Avatar size="sm" src={died.profileUrl} />
+                                  <div className="ml-4 hidden sm:block md:hidden lg:block">
+                                    <div className="text-sm font-medium text-gray-900">
+                                      {died.displayName}
+                                    </div>
+                                    <div className="text-sm text-gray-500">{died.name}</div>
                                   </div>
-                                  <div className="text-sm text-gray-500">{died.name}</div>
                                 </div>
-                              </div>
-                            </td>
+                              </td>
+                            )}
                             {/* <td
                               className={cn(
                                 'px-4 py-4 whitespace-nowrap text-sm text-center',
