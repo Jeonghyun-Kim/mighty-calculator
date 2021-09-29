@@ -18,7 +18,7 @@ export async function getUsersByIds(userIds: (OurId | undefined | null)[]) {
 
   const users = await db
     .collection<User>('user')
-    .aggregate([
+    .aggregate<UserInfo>([
       {
         $match: { _id: { $in: userObjectIds }, approvedAt: { $ne: null } },
       },
@@ -34,7 +34,7 @@ export async function getUsersByIds(userIds: (OurId | undefined | null)[]) {
         $project: { _id: 1, name: 1, displayName: 1, email: 1, profileUrl: 1, activatedAt: 1 },
       },
     ])
-    .toArray<UserInfo>();
+    .toArray();
 
   return users;
 }
