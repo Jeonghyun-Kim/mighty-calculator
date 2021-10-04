@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -146,49 +147,52 @@ export default function UserListPage() {
   if (!openRooms || !closedRooms) return <Loading />;
 
   return (
-    <div className="pb-12">
-      <Title>Rooms</Title>
-      <div className="mt-4 flex space-x-2">
-        <span>Joined rooms only</span>
-        <Toggle
-          enabled={joinedOnly}
-          setEnabled={setJoinedOnly}
-          screenReaderLabel="joined rooms only"
-        />
-      </div>
-      <section className="mt-2">
-        <h3 className="text-lg font-medium">Open rooms ({openRooms.length})</h3>
-        <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          <Link
-            href="/rooms/create"
-            className="w-full p-4 grid place-items-center rounded-md bg-white border border-dashed border-gray-500 hover:opacity-70"
-          >
-            <span className="text-gray-700 text-lg font-medium">+ Create new room</span>
-          </Link>
-          {openRooms.length !== 0 &&
-            openRooms.map((room) => (
+    <>
+      <NextSeo title="Mighty - Room List" />
+      <div className="pb-12">
+        <Title>Rooms</Title>
+        <div className="mt-4 flex space-x-2">
+          <span>Joined rooms only</span>
+          <Toggle
+            enabled={joinedOnly}
+            setEnabled={setJoinedOnly}
+            screenReaderLabel="joined rooms only"
+          />
+        </div>
+        <section className="mt-2">
+          <h3 className="text-lg font-medium">Open rooms ({openRooms.length})</h3>
+          <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <Link
+              href="/rooms/create"
+              className="w-full p-4 grid place-items-center rounded-md bg-white border border-dashed border-gray-500 hover:opacity-70"
+            >
+              <span className="text-gray-700 text-lg font-medium">+ Create new room</span>
+            </Link>
+            {openRooms.length !== 0 &&
+              openRooms.map((room) => (
+                <RoomListItem
+                  key={`room-${room._id}`}
+                  room={room}
+                  joined={!!user?._id && isParticipant(user._id, room)}
+                />
+              ))}
+          </div>
+        </section>
+
+        <section className={cn('mt-6', { hidden: closedRooms.length === 0 })}>
+          <h3 className="text-lg font-medium">Closed rooms ({closedRooms.length})</h3>
+          <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {closedRooms.map((room) => (
               <RoomListItem
                 key={`room-${room._id}`}
                 room={room}
                 joined={!!user?._id && isParticipant(user._id, room)}
               />
             ))}
-        </div>
-      </section>
-
-      <section className={cn('mt-6', { hidden: closedRooms.length === 0 })}>
-        <h3 className="text-lg font-medium">Closed rooms ({closedRooms.length})</h3>
-        <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {closedRooms.map((room) => (
-            <RoomListItem
-              key={`room-${room._id}`}
-              room={room}
-              joined={!!user?._id && isParticipant(user._id, room)}
-            />
-          ))}
-        </div>
-      </section>
-    </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
 

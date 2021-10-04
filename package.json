@@ -34,6 +34,7 @@
     "moment": "2.29.1",
     "mongodb": "4.1.2",
     "next": "11.1.2",
+    "next-seo": "4.28.1",
     "nprogress": "0.2.0",
     "react": "17.0.2",
     "react-cropper": "2.1.8",

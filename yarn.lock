@@ -5074,6 +5074,7 @@ __metadata:
     moment: 2.29.1
     mongodb: 4.1.2
     next: 11.1.2
+    next-seo: 4.28.1
     nprogress: 0.2.0
     postcss: 8.3.6
     postcss-focus-visible: 5.0.0
@@ -5342,6 +5343,17 @@ __metadata:
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
   checksum: 23ad088b08f898fc9b53011d7bb78ec48e79de7627e01ab5518e806033861bef68d5b0cd0e2205c2f36690ac9571ff6bcb05eb777ced2eeda8d4ac5b44592c3d
+  languageName: node
+  linkType: hard
+
+"next-seo@npm:4.28.1":
+  version: 4.28.1
+  resolution: "next-seo@npm:4.28.1"
+  peerDependencies:
+    next: ^8.1.1-canary.54 || >=9.0.0
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: 4f845275b8dbe1023b983e3c243634a6d13a9f3f4fc0f0b800d4163db5d0933e473d0deca65779bcc95c249317a8e6a8c9df1fedeb531dd83ae66b9827cfa920
   languageName: node
   linkType: hard
 

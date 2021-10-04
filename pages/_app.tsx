@@ -1,6 +1,7 @@
 import '@assets/main.css';
 import 'nprogress/nprogress.css';
 
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import NProgress from 'nprogress';
@@ -43,6 +44,25 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Script src="/js/redirectIE.js" strategy="beforeInteractive" />
+      <DefaultSeo
+        defaultTitle="Mighty Calculator"
+        canonical="https://mighty.kay.kr/"
+        additionalLinkTags={[{ rel: 'icon', href: '/favicon.ico' }]}
+        openGraph={{
+          type: 'website',
+          title: 'SSHS Mighty Calulator',
+          images: [
+            {
+              url: 'https://mighty.kay.kr/open-graph-v1.png',
+              width: 1200,
+              height: 630,
+              alt: 'SSHS Mighty Calculator',
+            },
+          ],
+        }}
+        defaultOpenGraphImageWidth={1200}
+        defaultOpenGraphVideoHeight={630}
+      />
       <SWRConfig value={{ fetcher: fetcherJson }}>
         <ManagedUIContext>
           <Layout>
