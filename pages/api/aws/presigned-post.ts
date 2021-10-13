@@ -5,20 +5,17 @@ import {
   UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import cryptoRandomString from 'crypto-random-string';
 import got from 'got';
 import Joi from 'joi';
 import sharp from 'sharp';
-import cryptoRandomString from 'crypto-random-string';
 
-// utils
 import { createError } from '@defines/errors';
 
 import { verifySession } from '@lib/server/verify-session';
 
 import { s3Client } from '@utils/aws/s3';
 import { withErrorHandler } from '@utils/with-error-handler';
-
-// types & defines
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
