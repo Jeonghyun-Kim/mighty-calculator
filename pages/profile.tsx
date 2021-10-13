@@ -41,9 +41,9 @@ export default function ProfilePage() {
       //   `/api/aws/presigned-post?key=${file.name}`,
       // );
 
-      const { url, fields } = await fetcher
-        .get('/api/aws/presigned-post', { searchParams: { key: file.name } })
-        .json<{ url: string; fields: { [key: string]: string } }>();
+      const { url, fields, key } = await fetcher
+        .get('/api/aws/presigned-post', { searchParams: { ext: file.name.split('.')[1] } })
+        .json<{ url: string; fields: { [key: string]: string }; key: string }>();
 
       const formData = new FormData();
       Object.entries({ ...fields }).forEach(([key, value]) => {
@@ -57,7 +57,7 @@ export default function ProfilePage() {
         }),
       );
 
-      formData.append('file', croppedFile, file.name);
+      formData.append('file', croppedFile, key);
 
       const response = await fetch(url, { method: 'POST', body: formData });
       if (!response.ok) {
@@ -67,8 +67,8 @@ export default function ProfilePage() {
       // await fetcher(`/api/aws/presigned-post?key=${file.name}`, { method: 'POST' });
       // await fetcher(`/api/user/profile?key=${file.name}`, { method: 'POST' });
 
-      await fetcher.post('/api/aws/presigned-post', { searchParams: { key: file.name } });
-      await fetcher.post('/api/user/profile', { searchParams: { key: file.name } });
+      await fetcher.post('/api/aws/presigned-post', { searchParams: { key } });
+      await fetcher.post('/api/user/profile', { searchParams: { key } });
       mutate();
 
       setPreviewUrl('');
