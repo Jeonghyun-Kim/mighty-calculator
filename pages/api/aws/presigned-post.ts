@@ -8,6 +8,7 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import got from 'got';
 import Joi from 'joi';
 import sharp from 'sharp';
+import cryptoRandomString from 'crypto-random-string';
 
 // utils
 import { createError } from '@defines/errors';
@@ -34,10 +35,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === 'GET') {
     const querySchema = Joi.object({
-      key: Joi.string().label('key').max(100).required(),
+      ext: Joi.string().label('extension').valid('jpeg', 'jpg', 'png').required(),
     });
 
-    const { key } = (await querySchema.validateAsync(req.query)) as { key: string };
+    const { ext } = (await querySchema.validateAsync(req.query)) as { ext: string };
+
+    const key = `${cryptoRandomString({ length: 10, type: 'url-safe' })}.${ext}`;
 
     const { url, fields } = await createPresignedPost(s3Client, {
       Bucket,
@@ -47,7 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       Expires: expiresIn,
     });
 
-    return res.status(201).json({ url, fields });
+    return res.status(201).json({ url, fields, key });
   }
 
   if (req.method === 'POST') {

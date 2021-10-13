@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { useUI } from '@components/context';
 
-const VALID_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const VALID_FILE_TYPES = ['image/jpeg', 'image/png'];
 
 interface DragDropProps {
   className?: string;
@@ -99,7 +99,7 @@ export default function DragDrop({
                 name="file-upload"
                 type="file"
                 className="sr-only"
-                accept="image/gif, image/jpeg, image/png"
+                accept="image/jpeg, image/png"
                 onChange={(e) => {
                   if (!e.target.files || !e.target.files[0]) return;
 
@@ -120,7 +120,7 @@ export default function DragDrop({
             </label>
             <p className="pl-1">or drag and drop</p>
           </div>
-          <p className="text-xs text-gray-500">PNG, JPG, GIF up to {maximumSize}MB</p>
+          <p className="text-xs text-gray-500">PNG, JPG up to {maximumSize}MB</p>
         </div>
       )}
     </div>
