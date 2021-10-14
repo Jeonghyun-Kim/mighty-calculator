@@ -2,7 +2,8 @@ import cn from 'classnames';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
+import useSWRInfinite from 'swr/infinite';
 
 import { useUI } from '@components/context';
 import { Loading, Title } from '@components/core';
@@ -114,34 +115,44 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
 }
 
 export default function UserListPage() {
-  const { data: rooms } = useSWR<Room[]>('/api/room');
+  const { data, size, setSize } = useSWRInfinite<{ rooms: Room[]; roomCount: number }>(
+    (index) => `/api/room?limit=${index}`,
+    {
+      revalidateFirstPage: false,
+    },
+  );
+
   const { user } = useSession();
   const [joinedOnly, setJoinedOnly] = useState(false);
 
   const openRooms = useMemo(
     () =>
-      rooms &&
+      data &&
       user &&
-      rooms
+      data
+        .map(({ rooms }) => rooms)
+        .flat(1)
         .filter(({ state }) => state === 'inProgress')
         .filter(
           ({ participants }) =>
             !joinedOnly || participants.map(({ _id }) => _id).includes(user._id),
         ),
-    [rooms, user, joinedOnly],
+    [data, user, joinedOnly],
   );
 
   const closedRooms = useMemo(
     () =>
-      rooms &&
+      data &&
       user &&
-      rooms
+      data
+        .map(({ rooms }) => rooms)
+        .flat(1)
         .filter(({ state }) => state === 'ended')
         .filter(
           ({ participants }) =>
             !joinedOnly || participants.map(({ _id }) => _id).includes(user._id),
         ),
-    [rooms, user, joinedOnly],
+    [data, user, joinedOnly],
   );
 
   if (!openRooms || !closedRooms) return <Loading />;
@@ -180,7 +191,7 @@ export default function UserListPage() {
         </section>
 
         <section className={cn('mt-6', { hidden: closedRooms.length === 0 })}>
-          <h3 className="text-lg font-medium">Closed rooms ({closedRooms.length})</h3>
+          <h3 className="text-lg font-medium">Closed rooms ({data && data[0].roomCount})</h3>
           <div className="mt-4 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {closedRooms.map((room) => (
               <RoomListItem
@@ -191,6 +202,19 @@ export default function UserListPage() {
             ))}
           </div>
         </section>
+        {data && closedRooms.length < data[0].roomCount && (
+          <div className="mt-8 max-w-lg mx-auto">
+            <Button
+              onClick={() => {
+                setSize(size + 1);
+              }}
+              color="white"
+              full
+            >
+              More
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
