@@ -16,16 +16,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     verifySession(req, res);
 
+    const querySchema = Joi.object({
+      limit: Joi.number().min(0).required(),
+    });
+
+    const { limit = 0 } = (await querySchema.validateAsync(req.query)) as { limit: number };
+
     const { db } = await connectMongo();
 
-    const rooms = await db
+    let roomCount;
+    let openedRooms;
+    if (limit === 0) {
+      roomCount = await db.collection<Room>('room').count({ state: 'ended', deletedAt: null });
+
+      openedRooms = (await db
+        .collection<Room>('room')
+        .find({ state: 'inProgress', deletedAt: null })
+        .project({ deletedAt: 0 })
+        .sort({ createdAt: -1 })
+        .toArray()) as Room[];
+    }
+
+    const closedRooms = await db
       .collection<Room>('room')
-      .find({ deletedAt: null })
+      .find({ state: 'ended', deletedAt: null })
       .project({ deletedAt: 0 })
       .sort({ createdAt: -1 })
+      .skip(limit * 12)
+      .limit(12)
       .toArray();
 
-    return res.json(rooms);
+    return res.json({
+      rooms: openedRooms ? [...openedRooms, ...closedRooms] : closedRooms,
+      roomCount,
+    });
   }
 
   if (req.method === 'POST') {

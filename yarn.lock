@@ -2873,13 +2873,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dequal@npm:2.0.2":
-  version: 2.0.2
-  resolution: "dequal@npm:2.0.2"
-  checksum: 86c7a2c59f7b0797ed397c74b5fcdb744e48fc19440b70ad6ac59f57550a96b0faef3f1cfd5760ec5e6d3f7cb101f634f1f80db4e727b1dc8389bf62d977c0a0
-  languageName: node
-  linkType: hard
-
 "des.js@npm:^1.0.0":
   version: 1.0.1
   resolution: "des.js@npm:1.0.1"
@@ -5093,7 +5086,7 @@ __metadata:
     react-cropper: 2.1.8
     react-dom: 17.0.2
     sharp: 0.28.3
-    swr: 1.0.0
+    swr: 1.1.0-beta.5
     tailwindcss: ^2.2.16
     typescript: 4.4.2
   languageName: unknown
@@ -7288,14 +7281,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"swr@npm:1.0.0":
-  version: 1.0.0
-  resolution: "swr@npm:1.0.0"
-  dependencies:
-    dequal: 2.0.2
+"swr@npm:1.1.0-beta.5":
+  version: 1.1.0-beta.5
+  resolution: "swr@npm:1.1.0-beta.5"
   peerDependencies:
-    react: ^16.11.0 || ^17.0.0
-  checksum: 8ffb767ca5c2f0d5e2280d31a6f497fac2739cf7c3518b0266b8d5c619ea9a74b1953b82e13b47463f6dd4f122885f941ce785b2fbf4d45e4b2e1d88f62b9c74
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0
+  checksum: 0955b08d30134a09af71339659cbee456d089af5bcff3cb495ac12fe3f4577250b8bdcddf3cd3c0962f1aa95ec308bc7f5a1aa87bc796aac47219f895b17db80
   languageName: node
   linkType: hard
 
