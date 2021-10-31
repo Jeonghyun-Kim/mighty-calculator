@@ -393,7 +393,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                               className={cn(
                                 'px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 table-cell',
                                 {
-                                  'table-cell': user._id !== room.dealer._id || !isOpen,
+                                  hidden: user._id !== room.dealer._id || !isOpen,
                                 },
                               )}
                             >
