@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { useUI } from '@components/context';
 import { Loading, Title } from '@components/core';
 import { DashboardLayout } from '@components/layout';
-import { Avatar, Button, Dropdown, Select } from '@components/ui';
+import { Avatar, Button, Dropdown } from '@components/ui';
 
 import { addNewGame } from '@lib/add-new-game';
 import { closeRoomById } from '@lib/close-room-by-id';
@@ -126,6 +126,12 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
     });
   }, [room, user, showModal, alertNoti, mutateRoom]);
 
+  const handleClearSelected = useCallback(() => {
+    setPresidentId(null);
+    setFriendId(null);
+    setDiedId(null);
+  }, []);
+
   const handleAddNewGame = useCallback(
     (presidentWin: boolean) => {
       if (!room) return;
@@ -146,9 +152,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
       )
         .then(() => mutateGames())
         .then(() => {
-          setPresidentId(null);
-          setFriendId(null);
-          setDiedId(null);
+          handleClearSelected();
           setGameConfig({ isNogi: false, isRun: false });
           showNoti({ title: 'Successfully Updated!' });
         })
@@ -162,6 +166,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
       _presidentId,
       _friendId,
       _diedId,
+      handleClearSelected,
       mutateGames,
       alertNoti,
       showNoti,
@@ -312,13 +317,24 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         <th
                           scope="col"
                           className={cn(
-                            'px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center hidden',
+                            'px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center table-cell',
                             {
-                              'lg:table-cell': user._id === room.dealer._id && isOpen,
+                              hidden: user._id !== room.dealer._id || !isOpen,
                             },
                           )}
                         >
-                          Action
+                          <button className="invisible font-semibold text-base" aria-hidden="true">
+                            (x)
+                          </button>
+                          Action{' '}
+                          <button
+                            className={cn('font-semibold text-base', {
+                              invisible: !_presidentId && !_diedId,
+                            })}
+                            onClick={() => handleClearSelected()}
+                          >
+                            (x)
+                          </button>
                         </th>
                         <th
                           scope="col"
@@ -328,19 +344,19 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hidden text-center lg:table-cell"
                         >
                           President
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hidden text-center lg:table-cell"
                         >
                           Friend
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                          className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hidden text-center lg:table-cell"
                         >
                           Opposition
                         </th>
@@ -375,9 +391,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             </td>
                             <td
                               className={cn(
-                                'px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden',
+                                'px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 table-cell',
                                 {
-                                  'lg:table-cell': user._id === room.dealer._id && isOpen,
+                                  'table-cell': user._id !== room.dealer._id || !isOpen,
                                 },
                               )}
                             >
@@ -419,7 +435,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             >
                               {score}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:table-cell">
                               {president.win} / {president.lose}
                               <br />(
                               {calcWinRatio(president) !== null
@@ -427,7 +443,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 : 'NULL'}
                               )
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:table-cell">
                               {friend.win} / {friend.lose}
                               <br />(
                               {calcWinRatio(friend) !== null
@@ -435,7 +451,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 : 'NULL'}
                               )
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500 hidden lg:table-cell">
                               {opposition.win} / {opposition.lose}
                               <br />(
                               {calcWinRatio(opposition) !== null
@@ -473,56 +489,58 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
             hidden: !isOpen || user._id !== room.dealer._id,
           })}
         >
-          <h6 className="font-medium">Register a new game</h6>
+          <h6 className="font-medium">Options</h6>
           <div className="mt-2 border border-gray-200 rounded-md shadow-md">
             <form className="p-4 space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <Select
-                label="Died"
-                className={cn({ hidden: room.participants.length !== 6 })}
-                items={[
-                  { key: 'died-null', label: 'Not Selected', value: null },
-                  ...room.participants.map(({ _id, name }) => ({
-                    key: `died-${_id}`,
-                    label: name,
-                    value: _id,
-                  })),
-                ]}
-                selectedValue={_diedId}
-                onSelect={({ value }) => setDiedId(value as never)}
-              />
-              <Select
-                label="President"
-                items={[
-                  { key: 'president-null', label: 'Not Selected', value: null },
-                  ...room.participants
-                    .filter(({ _id }) => _id !== _diedId)
-                    .map(({ _id, name }) => ({
-                      key: `president-${_id}`,
+              {/* <div className="lg:hidden">
+                <Select
+                  label="Died"
+                  className={cn({ hidden: room.participants.length !== 6 })}
+                  items={[
+                    { key: 'died-null', label: 'Not Selected', value: null },
+                    ...room.participants.map(({ _id, name }) => ({
+                      key: `died-${_id}`,
                       label: name,
                       value: _id,
                     })),
-                ]}
-                selectedValue={_presidentId}
-                onSelect={({ value }) => setPresidentId(value as never)}
-              />
-              <Select
-                label="Friend"
-                disabled={_presidentId === null}
-                items={[
-                  { key: 'friend-null', label: 'Not Selected', value: null },
-                  ...room.participants
-                    .filter(({ _id }) => _id !== _diedId)
-                    // .filter(({ _id }) => _id !== _presidentId)
-                    .map(({ _id, name }) => ({
-                      key: `friend-${_id}`,
-                      label: _id === _presidentId ? `${name} - (NF)` : name,
-                      value: _id,
-                    })),
-                ]}
-                selectedValue={_friendId}
-                onSelect={({ value }) => setFriendId(value as never)}
-              />
-              <div className="divide-y divide-gray-200">
+                  ]}
+                  selectedValue={_diedId}
+                  onSelect={({ value }) => setDiedId(value as never)}
+                />
+                <Select
+                  label="President"
+                  items={[
+                    { key: 'president-null', label: 'Not Selected', value: null },
+                    ...room.participants
+                      .filter(({ _id }) => _id !== _diedId)
+                      .map(({ _id, name }) => ({
+                        key: `president-${_id}`,
+                        label: name,
+                        value: _id,
+                      })),
+                  ]}
+                  selectedValue={_presidentId}
+                  onSelect={({ value }) => setPresidentId(value as never)}
+                />
+                <Select
+                  label="Friend"
+                  disabled={_presidentId === null}
+                  items={[
+                    { key: 'friend-null', label: 'Not Selected', value: null },
+                    ...room.participants
+                      .filter(({ _id }) => _id !== _diedId)
+                      // .filter(({ _id }) => _id !== _presidentId)
+                      .map(({ _id, name }) => ({
+                        key: `friend-${_id}`,
+                        label: _id === _presidentId ? `${name} - (NF)` : name,
+                        value: _id,
+                      })),
+                  ]}
+                  selectedValue={_friendId}
+                  onSelect={({ value }) => setFriendId(value as never)}
+                />
+              </div> */}
+              {/* <div className="divide-y divide-gray-200">
                 <div className="relative flex items-start py-4">
                   <div className="min-w-0 flex-1 text-sm">
                     <label htmlFor="no-giru" className="font-medium text-gray-700">
@@ -571,6 +589,26 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                     </div>
                   </div>
                 </div>
+              </div> */}
+              <div className="flex space-x-4">
+                <button
+                  className={cn(
+                    'flex-1 p-4 grid place-items-center text-gray-700 rounded-md ring hover:ring-gray-300 transition-colors',
+                    gameConfig.isNogi ? 'ring-gray-400 hover:ring-gray-400' : 'ring-gray-200',
+                  )}
+                  onClick={() => setGameConfig((prev) => ({ ...prev, isNogi: !prev.isNogi }))}
+                >
+                  NoGi
+                </button>
+                <button
+                  className={cn(
+                    'flex-1 p-4 grid place-items-center text-gray-700 rounded-md ring hover:ring-gray-300 transition-colors',
+                    gameConfig.isRun ? 'ring-gray-400 hover:ring-gray-400' : 'ring-gray-200',
+                  )}
+                  onClick={() => setGameConfig((prev) => ({ ...prev, isRun: !prev.isRun }))}
+                >
+                  Run
+                </button>
               </div>
               <div className="flex space-x-2">
                 <Button
@@ -823,6 +861,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
           )}
         </div>
       </div>
+      {/* <div className="rounded-lg shadow-xl p-6 hidden 2xl:block fixed bottom-12 right-12 bg-gray-100 w-20 h-80"></div> */}
     </>
   );
 }
