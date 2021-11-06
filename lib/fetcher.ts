@@ -30,7 +30,11 @@ export const fetcher = ky.extend({
   hooks: {
     afterResponse: [
       async (_req, _options, res) => {
-        if (!res.ok) throw await res.json();
+        // FIXME:
+        if (!res.ok) {
+          if (res.status >= 400) throw await res.json();
+          throw res;
+        }
       },
     ],
   },
