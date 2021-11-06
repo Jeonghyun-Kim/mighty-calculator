@@ -205,8 +205,9 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
     <>
       <NextSeo
         title={`Mighty - ${
-          room.participants.map(({ _id }) => _id).indexOf(user._id) !== -1 &&
-          `[${scores.find(({ user: player }) => user._id === player._id)?.score}] - `
+          room.participants.map(({ _id }) => _id).indexOf(user._id) !== -1
+            ? `[${scores.find(({ user: player }) => user._id === player._id)?.score}] - `
+            : ''
         }${room.title}`}
       />
       <div className="pb-12">
