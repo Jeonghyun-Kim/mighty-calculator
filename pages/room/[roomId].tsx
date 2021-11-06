@@ -94,6 +94,19 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
 
     return Boolean(_presidentId && _friendId);
   }, [room, _presidentId, _friendId, _diedId]);
+  const dealer = useMemo(() => room?.dealer, [room]);
+  const president = useMemo(
+    () => room?.participants.find(({ _id }) => _id === _presidentId),
+    [room, _presidentId],
+  );
+  const friend = useMemo(
+    () => room?.participants.find(({ _id }) => _id === _friendId),
+    [room, _friendId],
+  );
+  const died = useMemo(
+    () => room?.participants.find(({ _id }) => _id === _diedId),
+    [room, _diedId],
+  );
 
   const { showModal, alertNoti, showNoti } = useUI();
 
@@ -398,18 +411,18 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                 },
                               )}
                             >
-                              {gameType === '6M' && _diedId === null ? (
-                                <button onClick={() => setDiedId(player._id as string)}>
-                                  Died
+                              {_presidentId === null ? (
+                                <button onClick={() => setPresidentId(player._id as string)}>
+                                  President
                                 </button>
-                              ) : _presidentId === null ? (
+                              ) : gameType === '6M' && _diedId === null ? (
                                 <button
-                                  onClick={() => setPresidentId(player._id as string)}
+                                  onClick={() => setDiedId(player._id as string)}
                                   className={cn({
-                                    hidden: gameType === '6M' && _diedId === player._id,
+                                    hidden: gameType === '6M' && _presidentId === player._id,
                                   })}
                                 >
-                                  President
+                                  Died
                                 </button>
                               ) : _friendId === null ? (
                                 <button
@@ -490,7 +503,13 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
             hidden: !isOpen || user._id !== room.dealer._id,
           })}
         >
-          <h6 className="font-medium">Options</h6>
+          <h6 className="font-medium">Selected</h6>
+          <div>
+            <p>President: {president?.name ?? 'NULL'}</p>
+            <p className={cn({ hidden: gameType === '5M' })}>Died: {died?.name ?? 'NULL'}</p>
+            <p>Friend: {friend?.name ?? 'NULL'}</p>
+          </div>
+          <h6 className="mt-4 font-medium">Options</h6>
           <div className="mt-2 border border-gray-200 rounded-md shadow-md">
             <form className="p-4 space-y-4" onSubmit={(e) => e.preventDefault()}>
               {/* <div className="lg:hidden">

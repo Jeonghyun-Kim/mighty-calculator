@@ -13,29 +13,66 @@ import DragDrop from '@components/ui/DragDrop';
 import { fetcher } from '@lib/fetcher';
 import { useSession } from '@lib/hooks/use-session';
 import { updateDisplayName } from '@lib/update-display-name';
+import { updatePassword } from '@lib/update-password';
 
 export default function ProfilePage() {
   const { user, mutate } = useSession();
   const cropperRef = useRef<ReactCropperElement>(null);
+  const [password, setPassword] = useState<{ new: string; confirm: string }>({
+    new: '',
+    confirm: '',
+  });
 
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+
   const [previewUrl, setPreviewUrl] = useState('');
   const [loadingFlags, setLoadingFlags] = useState({
     displayName: false,
     picture: false,
     changed: false,
+    password: false,
+    image: false,
   });
 
   const { showNoti } = useUI();
+
+  const handleChangePassword = useCallback(
+    async (password: string) => {
+      try {
+        setLoadingFlags((prev) => ({ ...prev, password: true }));
+
+        await updatePassword(password);
+
+        showNoti({ title: 'Password changed!' });
+      } catch (err) {
+        if (err.status === 304)
+          showNoti({
+            variant: 'alert',
+            title: 'Invalid Password Input',
+            content: 'New password matches current password ',
+          });
+        else {
+          showNoti({
+            variant: 'alert',
+            title: err.name,
+            content: err.message,
+          });
+        }
+      } finally {
+        setPassword({ new: '', confirm: '' });
+        setLoadingFlags((prev) => ({ ...prev, password: false }));
+      }
+    },
+    [showNoti],
+  );
 
   const handleUpload = useCallback(async () => {
     const cropperElem = cropperRef.current;
     if (!file || !cropperElem) return;
 
     try {
-      setLoading(true);
+      setLoadingFlags((prev) => ({ ...prev, image: true }));
 
       // const { url, fields } = await fetcher<{ url: string; fields: { [key: string]: string } }>(
       //   `/api/aws/presigned-post?key=${file.name}`,
@@ -78,7 +115,7 @@ export default function ProfilePage() {
     } catch (err) {
       showNoti({ variant: 'alert', title: err.name, content: err.message });
     } finally {
-      setLoading(false);
+      setLoadingFlags((prev) => ({ ...prev, image: false }));
     }
   }, [file, showNoti, mutate]);
 
@@ -143,6 +180,60 @@ export default function ProfilePage() {
             </div>
             <div className="col-span-12 sm:col-span-6 flex justify-end">
               <Button type="submit" disabled size="sm">
+                Save
+              </Button>
+            </div>
+          </form>
+        </div>
+        {/* password section */}
+        <div className="mt-8 p-4 border border-gray-200 rounded-lg">
+          <h4 className="text-lg font-medium text-gray-700">Change Password</h4>
+          <p className="mt-1.5 text-sm text-gray-500">You can change your password here.</p>
+          <form className="mt-4 sm:flex justify-between">
+            <div className="sm:w-80">
+              <label htmlFor="full-name" className="text-sm font-medium text-gray-700">
+                New Password
+              </label>
+              <input
+                maxLength={30}
+                type="password"
+                name="new-password"
+                id="new-password"
+                onChange={(e) => {
+                  setPassword((prev) => ({ ...prev, new: e.target.value }));
+                }}
+                value={password.new}
+                className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500"
+              />
+              <label htmlFor="full-name" className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                maxLength={30}
+                type="password"
+                name="confirm-password"
+                id="confirm-password"
+                onChange={(e) => {
+                  setPassword((prev) => ({ ...prev, confirm: e.target.value }));
+                }}
+                value={password.confirm}
+                className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500"
+              />
+            </div>
+            <div className="mt-4 flex justify-end sm:block sm:self-end">
+              <Button
+                onClick={() => {
+                  handleChangePassword(password.new);
+                }}
+                type="submit"
+                size="sm"
+                disabled={
+                  loadingFlags.password ||
+                  password.new.length < 8 ||
+                  password.new.length > 30 ||
+                  password.confirm !== password.new
+                }
+              >
                 Save
               </Button>
             </div>
@@ -229,7 +320,11 @@ export default function ProfilePage() {
             }}
           />
           <div className="flex justify-end">
-            <Button disabled={loading || !file} onClick={handleUpload} className="text-right mt-4">
+            <Button
+              disabled={loadingFlags.image || !file}
+              onClick={handleUpload}
+              className="text-right mt-4"
+            >
               Save
             </Button>
           </div>
