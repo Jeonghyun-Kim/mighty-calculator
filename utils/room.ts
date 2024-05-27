@@ -15,7 +15,7 @@ export async function getRoomByQuery(req: NextApiRequest, res: NextApiResponse) 
   const querySchema = Joi.object({ roomId: Joi.string().hex().length(24).required() });
   const { roomId } = (await querySchema.validateAsync(req.query)) as { roomId: string };
 
-  if (!isValidId(roomId)) throw new ValidationError(`Invalid roomId: ${roomId}`, '', '');
+  if (!isValidId(roomId)) throw new ValidationError(`Invalid roomId: ${roomId}`, [], '');
 
   const { db } = await connectMongo();
   const room = await db

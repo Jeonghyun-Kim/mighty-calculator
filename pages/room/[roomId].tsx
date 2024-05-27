@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import cn from 'classnames';
 import { ObjectId } from 'mongodb';
 import { NextSeo } from 'next-seo';
@@ -9,23 +9,20 @@ import { useUI } from '@components/context';
 import { Loading, Title } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Avatar, Button, Dropdown } from '@components/ui';
-
 import { addNewGame } from '@lib/add-new-game';
 import { closeRoomById } from '@lib/close-room-by-id';
 import { deleteGameById } from '@lib/delete-game-by-id';
 import { useSession } from '@lib/hooks/use-session';
 import { transferDealerTo } from '@lib/transfer-dealer-to';
-
 import { calcScoresByGame } from '@utils/game/calc-scores-by-game';
 import { momentDate } from '@utils/moment';
 import { connectMongo } from '@utils/mongodb/connect';
 
-import { Game } from 'types/game';
-import { Room } from 'types/room';
-import { UserInfo } from 'types/user';
-
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
+import type { Game } from 'types/game';
+import type { Room } from 'types/room';
+import type { UserInfo } from 'types/user';
 
 interface UserScore {
   user: UserInfo;
@@ -866,7 +863,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                                     });
                                   }}
                                 >
-                                  <XIcon className="w-5 h-5" />
+                                  <XMarkIcon className="w-5 h-5" />
                                 </button>
                               </td>
                             </tr>

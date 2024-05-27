@@ -1,7 +1,6 @@
 import { serialize } from 'cookie';
 
 import { COOKIE_KEY_ACCESS_TOKEN, defaultCookieOptions } from '@defines/cookie';
-
 import { withErrorHandler } from '@utils/with-error-handler';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

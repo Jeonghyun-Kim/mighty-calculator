@@ -1,16 +1,13 @@
 import { ObjectId } from 'mongodb';
 
 import { createError } from '@defines/errors';
-
 import { compareId } from '@lib/server/compare-id';
 import { verifyAdminKey } from '@lib/server/verify-admin-key';
-
 import { getGamesByRoomId } from '@utils/game';
 import { calcStatsByGame } from '@utils/game/calc-stats-by-game';
 import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomByQuery } from '@utils/room';
 import { withErrorHandler } from '@utils/with-error-handler';
-
 import { Room } from 'types/room';
 import { User } from 'types/user';
 

@@ -9,7 +9,6 @@ import { Loading } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Button } from '@components/ui';
 import DragDrop from '@components/ui/DragDrop';
-
 import { fetcher } from '@lib/fetcher';
 import { useSession } from '@lib/hooks/use-session';
 import { updateDisplayName } from '@lib/update-display-name';

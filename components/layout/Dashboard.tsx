@@ -1,21 +1,21 @@
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition, TransitionChild } from '@headlessui/react';
 import {
   HomeIcon,
   LockOpenIcon,
-  MenuIcon,
   RssIcon,
   UsersIcon,
-  XIcon,
   FingerPrintIcon,
-} from '@heroicons/react/outline';
+  Bars3Icon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import cn from 'classnames';
 import NextImage from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, useMemo, useState } from 'react';
 
 import CommonLayout from '@components/layout/Common';
-import { Avatar, Link } from '@components/ui';
-
+import { Avatar } from '@components/ui';
 import { useAdminKey } from '@lib/hooks/use-admin-key';
 import { useSession } from '@lib/hooks/use-session';
 
@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <CommonLayout className="h-full flex bg-white">
-      <Transition.Root show={sidebarOpen} as={Fragment}>
+      <Transition show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
           static
@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           open={sidebarOpen}
           onClose={setSidebarOpen}
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
@@ -61,9 +61,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-          </Transition.Child>
-          <Transition.Child
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+          </TransitionChild>
+          <TransitionChild
             as={Fragment}
             enter="transition ease-in-out duration-300 transform"
             enterFrom="-translate-x-full"
@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             leaveTo="-translate-x-full"
           >
             <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-in-out duration-300"
                 enterFrom="opacity-0"
@@ -88,10 +88,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     onClick={() => setSidebarOpen(false)}
                   >
                     <span className="sr-only">Close sidebar</span>
-                    <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                   </button>
                 </div>
-              </Transition.Child>
+              </TransitionChild>
               <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-shrink-0 flex items-center px-4">
                   <NextImage src="/assets/spades.svg" alt="Spade" width={24} height={28} />
@@ -152,12 +152,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Link>
               </div>
             </div>
-          </Transition.Child>
+          </TransitionChild>
           <div className="flex-shrink-0 w-14">
             {/* Force sidebar to shrink to fit close icon */}
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
 
       {/* Static sidebar for desktop */}
       <div className="hidden md:flex md:flex-shrink-0">
@@ -234,7 +234,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
-            <MenuIcon className="h-6 w-6" aria-hidden="true" />
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
         <main className="relative h-full pt-16 md:pt-6 max-w-7xl mx-auto px-4 sm:px-6 md:px-8">

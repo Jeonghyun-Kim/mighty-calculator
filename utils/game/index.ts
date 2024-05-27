@@ -15,7 +15,7 @@ export async function getGameByQuery(req: NextApiRequest, res: NextApiResponse) 
   const querySchema = Joi.object({ gameId: Joi.string().hex().length(24).required() });
   const { gameId } = (await querySchema.validateAsync(req.query)) as { gameId: string };
 
-  if (!isValidId(gameId)) throw new ValidationError(`Invalid gameId: ${gameId}`, '', '');
+  if (!isValidId(gameId)) throw new ValidationError(`Invalid gameId: ${gameId}`, [], '');
 
   const { db } = await connectMongo();
   const game = await db

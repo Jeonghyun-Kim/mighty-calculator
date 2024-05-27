@@ -1,20 +1,17 @@
 import Joi, { ValidationError } from 'joi';
 
 import { createError } from '@defines/errors';
-
 import { isParticipant } from '@lib/is-participant';
 import { isValidId } from '@lib/is-valid-id';
 import { compareId } from '@lib/server/compare-id';
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomByQuery } from '@utils/room';
 import { getUserInfoById } from '@utils/user';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { Room } from 'types/room';
-
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { Room } from 'types/room';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const room = await getRoomByQuery(req, res);
@@ -58,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }).validateAsync(req.body)) as { dealerId: string };
 
     if (!isValidId(dealerId) || !isParticipant(dealerId, room)) {
-      throw new ValidationError('dealderId validation failed', '', '');
+      throw new ValidationError('dealderId validation failed', [], '');
     }
 
     const dealer = await getUserInfoById(res, dealerId);

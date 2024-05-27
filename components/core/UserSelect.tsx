@@ -2,7 +2,7 @@ import cn from 'classnames';
 
 import { Avatar } from '@components/ui';
 
-import { UserInfo } from 'types/user';
+import type { UserInfo } from 'types/user';
 
 interface UserSelectProps {
   className?: string;

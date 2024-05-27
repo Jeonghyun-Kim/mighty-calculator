@@ -1,5 +1,4 @@
 import { verifyAdminKey } from '@lib/server/verify-admin-key';
-
 import { withErrorHandler } from '@utils/with-error-handler';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

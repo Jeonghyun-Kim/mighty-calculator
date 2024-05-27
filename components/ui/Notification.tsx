@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import cn from 'classnames';
 import { Fragment } from 'react';
 
@@ -78,7 +78,7 @@ export default function Notification({
                     }}
                   >
                     <span className="sr-only">Close</span>
-                    <XIcon className="h-5 w-5" aria-hidden="true" />
+                    <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>

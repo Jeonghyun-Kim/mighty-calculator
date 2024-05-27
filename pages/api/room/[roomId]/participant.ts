@@ -1,20 +1,17 @@
 import Joi, { ValidationError } from 'joi';
 
 import { createError } from '@defines/errors';
-
 import { isParticipant } from '@lib/is-participant';
 import { isValidId } from '@lib/is-valid-id';
 import { compareId } from '@lib/server/compare-id';
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomByQuery } from '@utils/room';
 import { getUserInfoById } from '@utils/user';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { Room } from 'types/room';
-
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { Room } from 'types/room';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const querySchema = Joi.object({
@@ -25,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   if (!isValidId(participantId))
-    throw new ValidationError(`Invalid participantId: ${participantId}`, '', '');
+    throw new ValidationError(`Invalid participantId: ${participantId}`, [], '');
 
   const room = await getRoomByQuery(req, res);
 

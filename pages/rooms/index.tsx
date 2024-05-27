@@ -1,6 +1,7 @@
 import cn from 'classnames';
-import { NextSeo } from 'next-seo';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import { useCallback, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 import useSWRInfinite from 'swr/infinite';
@@ -8,15 +9,13 @@ import useSWRInfinite from 'swr/infinite';
 import { useUI } from '@components/context';
 import { Loading, Title } from '@components/core';
 import { DashboardLayout } from '@components/layout';
-import { Avatar, Button, Link, Toggle } from '@components/ui';
-
+import { Avatar, Button, Toggle } from '@components/ui';
 import { closeRoomById } from '@lib/close-room-by-id';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
-
 import { momentDate } from '@utils/moment';
 
-import { Room } from 'types/room';
+import type { Room } from 'types/room';
 
 function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
   const router = useRouter();

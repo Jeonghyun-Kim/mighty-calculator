@@ -1,8 +1,7 @@
-import { Expand } from 'types';
-
 import { fetcher } from '@lib/fetcher';
 
-import { User } from 'types/user';
+import type { Expand } from 'types';
+import type { User } from 'types/user';
 
 interface GetSignupRequestsProps {
   adminKey: string;

@@ -6,8 +6,7 @@ import useSWR from 'swr';
 import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
 import { CustomError } from '@defines/errors';
 
-// types
-import { UserInfo } from 'types/user';
+import type { UserInfo } from 'types/user';
 
 interface UseSessionOptions {
   savePath?: boolean;

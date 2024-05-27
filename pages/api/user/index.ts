@@ -1,17 +1,15 @@
 import bcrypt from 'bcrypt';
 import Joi from 'joi';
+import { ObjectId } from 'mongodb';
 
 import { SALT_ROUND } from '@defines/bcrypt';
 import { createError } from '@defines/errors';
-
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { User } from 'types/user';
-
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { User } from 'types/user';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
@@ -26,9 +24,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     );
 
-    if (!user.value) throw new Error('Cannot find user.');
+    if (!user) throw new Error('Cannot find user.');
 
-    return res.json(user.value);
+    return res.json(user);
   }
 
   if (req.method === 'POST') {
@@ -57,6 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     await db.collection<User>('user').insertOne({
+      _id: new ObjectId(),
       name,
       displayName: displayName || '',
       email,

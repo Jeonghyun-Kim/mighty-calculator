@@ -1,16 +1,13 @@
 import { ObjectId } from 'mongodb';
 
 import { createError } from '@defines/errors';
-
 import { isParticipant } from '@lib/is-participant';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
 import { verifySession } from '@lib/server/verify-session';
-
 import { getGameByQuery } from '@utils/game';
 import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomById } from '@utils/room';
 import { withErrorHandler } from '@utils/with-error-handler';
-
 import { Game, gameSchema } from 'types/game';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

@@ -1,11 +1,9 @@
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { User } from 'types/user';
-
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { User } from 'types/user';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {

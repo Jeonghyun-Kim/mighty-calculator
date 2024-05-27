@@ -5,7 +5,7 @@ import { createError, isCustomError } from '@defines/errors';
 
 import type { NextApiHandler } from 'next';
 
-export function withErrorHandler(handler: NextApiHandler) {
+export function withErrorHandler(handler: any) {
   const wrappedHandler: NextApiHandler = async (req, res) => {
     try {
       await handler(req, res);

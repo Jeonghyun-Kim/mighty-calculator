@@ -1,6 +1,6 @@
 import { fetcher } from '@lib/fetcher';
 
-import { Room } from 'types/room';
+import type { Room } from 'types/room';
 
 interface GetEndedRoomsProps {
   adminKey: string;

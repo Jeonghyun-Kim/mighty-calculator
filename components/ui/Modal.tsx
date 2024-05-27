@@ -1,5 +1,5 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, ExclamationIcon } from '@heroicons/react/outline';
+import { Dialog, Transition, TransitionChild } from '@headlessui/react';
+import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import cn from 'classnames';
 import { Fragment, useRef } from 'react';
 
@@ -41,7 +41,7 @@ export default function Modal({
         onClose={() => {}}
       >
         <div className="flex items-center justify-center min-h-screen pt-32 px-4 text-center sm:block sm:p-0">
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -50,14 +50,14 @@ export default function Modal({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </TransitionChild>
 
           {/* This element is to trick the browser into centering the modal contents. */}
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
             &#8203;
           </span>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -80,7 +80,9 @@ export default function Modal({
                 >
                   {/* <!-- Heroicon name: outline/check --> */}
                   {variant === 'default' && <CheckIcon className="h-6 w-6 text-green-600" />}
-                  {variant === 'alert' && <ExclamationIcon className="h-6 w-6 text-red-600" />}
+                  {variant === 'alert' && (
+                    <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />
+                  )}
                 </div>
                 <div
                   className={cn('mt-3 text-center', {
@@ -141,7 +143,7 @@ export default function Modal({
                 )}
               </div>
             </div>
-          </Transition.Child>
+          </TransitionChild>
         </div>
       </Dialog>
     </Transition.Root>

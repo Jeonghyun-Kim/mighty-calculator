@@ -2,11 +2,10 @@ import Joi from 'joi';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { User } from 'types/user';
+import type { User } from 'types/user';
 
 const awsPublicUrl = process.env.AWS_PUBLIC_URL;
 if (!awsPublicUrl) throw new Error('No such awsPublicUrl');

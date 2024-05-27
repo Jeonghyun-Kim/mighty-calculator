@@ -8,7 +8,6 @@ import {
 } from '@defines/cookie';
 import { createError } from '@defines/errors';
 import { ACCESS_TOKEN_EXPIRES_IN } from '@defines/token';
-
 import { signToken, verifyToken } from '@utils/jsonwebtoken';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

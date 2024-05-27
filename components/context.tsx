@@ -1,4 +1,13 @@
-import { createContext, FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 interface NotiContent {
   variant?: 'default' | 'alert';
@@ -57,7 +66,7 @@ const initialStateWithActions: StateWithActions = {
 
 export const UIContext = createContext<StateWithActions>(initialStateWithActions);
 
-export const UIProvider: FC = ({ ...props }) => {
+export const UIProvider = ({ ...props }: any) => {
   const [state, setState] = useState<State>(initialState);
   const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -161,6 +170,8 @@ export function useUI() {
   return context;
 }
 
-export const ManagedUIContext: FC = ({ children }) => <UIProvider>{children}</UIProvider>;
+export const ManagedUIContext = ({ children }: { children: ReactNode }) => (
+  <UIProvider>{children}</UIProvider>
+);
 
 export default ManagedUIContext;

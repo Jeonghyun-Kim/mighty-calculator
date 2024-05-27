@@ -1,6 +1,6 @@
 import { fetcher } from '@lib/fetcher';
 
-import { User } from 'types/user';
+import type { User } from 'types/user';
 
 export type SignupLocalProps = Pick<User, 'email' | 'password' | 'name' | 'displayName'>;
 

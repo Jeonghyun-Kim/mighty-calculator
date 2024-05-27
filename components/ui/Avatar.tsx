@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import NextImage from 'next/image';
 
 // const AVATAR_SIZES = [{key: 'sm', size: 32 }, { key: 'base', size: 40 } , {key: 'lg', size: 48}] as const;
 const AVATAR_SIZES = ['sm', 'base', 'lg'] as const;
@@ -7,10 +6,11 @@ const AVATAR_SIZES = ['sm', 'base', 'lg'] as const;
 interface AvatarProps {
   className?: string;
   src?: string | null;
-  size?: typeof AVATAR_SIZES[number];
+  size?: (typeof AVATAR_SIZES)[number];
+  alt?: string;
 }
 
-export default function Avatar({ className, src, size = 'base' }: AvatarProps) {
+export default function Avatar({ className, src, size = 'base', alt = '' }: AvatarProps) {
   return (
     <span
       className={cn(
@@ -23,7 +23,7 @@ export default function Avatar({ className, src, size = 'base' }: AvatarProps) {
         },
       )}
     >
-      <NextImage src={src ?? '/assets/avatar.png'} layout="fill" objectFit="cover" />
+      <img className="object-cover" src={src ?? '/assets/avatar.png'} alt={alt} />
     </span>
   );
 }

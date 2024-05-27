@@ -1,16 +1,15 @@
 import Joi, { ValidationError } from 'joi';
+import { ObjectId } from 'mongodb';
 
 import { isValidId } from '@lib/is-valid-id';
 import { compareId } from '@lib/server/compare-id';
 import { getUsersByIds } from '@lib/server/get-users-by-ids';
 import { verifySession } from '@lib/server/verify-session';
-
 import { connectMongo } from '@utils/mongodb/connect';
 import { withErrorHandler } from '@utils/with-error-handler';
 
-import { Room } from 'types/room';
-
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { Room } from 'types/room';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
@@ -69,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     for (const participantId of participantIds) {
       if (!isValidId(participantId)) {
-        throw new ValidationError(`invalid paricipantId: ${participantId}`, '', '');
+        throw new ValidationError(`invalid paricipantId: ${participantId}`, [], '');
       }
     }
 
@@ -80,6 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { db } = await connectMongo();
     const { insertedId } = await db.collection<Room>('room').insertOne({
+      _id: new ObjectId(),
       state: 'inProgress',
       title,
       dealer: participants[0],

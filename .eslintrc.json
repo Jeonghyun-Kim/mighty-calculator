@@ -1,0 +1,29 @@
+{
+  "extends": ["next", "prettier"],
+  "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling", "index"],
+          "type",
+          "unknown"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "no-unused-vars": "off",
+    "@next/next/no-img-element": "off",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      { "additionalHooks": "(useRecoilCallback|useRecoilTransaction_UNSTABLE)" }
+    ]
+  }
+}

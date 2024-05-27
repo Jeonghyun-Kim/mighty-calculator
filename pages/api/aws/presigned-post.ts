@@ -11,9 +11,7 @@ import Joi from 'joi';
 import sharp from 'sharp';
 
 import { createError } from '@defines/errors';
-
 import { verifySession } from '@lib/server/verify-session';
-
 import { s3Client } from '@utils/aws/s3';
 import { withErrorHandler } from '@utils/with-error-handler';
 

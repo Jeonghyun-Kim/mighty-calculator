@@ -1,8 +1,7 @@
-import { Expand } from 'types';
-
 import { fetcher } from '@lib/fetcher';
 
-import { Game } from 'types/game';
+import type { Expand } from 'types';
+import type { Game } from 'types/game';
 
 export type AddNewGameProps = Expand<
   Omit<Game, '_id' | '_roomId' | 'createdAt' | 'updatedAt' | 'deletedAt'> & {

@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import { isBrowser } from '@utils/is-browser';
 import { connectMongo } from '@utils/mongodb/connect';
 
-import { User, UserInfo } from 'types/user';
+import type { User, UserInfo } from 'types/user';
 
 export async function getUsersByIds(userIds: (OurId | undefined | null)[]) {
   if (isBrowser()) throw new Error('Cannot run getUsersByIds is browser env.');

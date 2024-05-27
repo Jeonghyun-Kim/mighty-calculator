@@ -1,5 +1,12 @@
-import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react';
+import { ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/24/solid';
 import cn from 'classnames';
 import { Fragment, useCallback } from 'react';
 
@@ -46,19 +53,19 @@ export default function Select<TType>({
       <Listbox value={getItemByValue(selectedValue)} onChange={onSelect} disabled={disabled}>
         {({ open }) => (
           <>
-            <Listbox.Label className="block text-base font-semibold text-gray-700">
+            <div className="block text-base font-semibold text-gray-700">
               <span>{label}</span>
               <span className={cn('text-gray-400', { hidden: !optional })}>&nbsp;(선택)</span>
-            </Listbox.Label>
+            </div>
             <div className="mt-1 relative">
-              <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400">
+              <ListboxButton className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400">
                 <span className="block truncate text-base">
                   {getItemByValue(selectedValue).label}
                 </span>
                 <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </span>
-              </Listbox.Button>
+              </ListboxButton>
 
               <Transition
                 show={open}
@@ -67,22 +74,22 @@ export default function Select<TType>({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options
+                <ListboxOptions
                   static
                   className="absolute mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none z-10"
                 >
                   {items.map((item) => (
-                    <Listbox.Option
+                    <ListboxOption
                       key={item.key}
-                      className={({ active }) =>
+                      className={({ focus }) =>
                         cn(
-                          active ? 'text-white bg-teal-400' : 'text-gray-900',
+                          focus ? 'text-white bg-teal-400' : 'text-gray-900',
                           'cursor-default select-none relative py-2 pl-3 pr-9',
                         )
                       }
                       value={item}
                     >
-                      {({ selected, active }) => (
+                      {({ selected, focus }) => (
                         <>
                           <span
                             className={cn(
@@ -96,7 +103,7 @@ export default function Select<TType>({
                           {selected ? (
                             <span
                               className={cn(
-                                active ? 'text-white' : 'text-teal-400',
+                                focus ? 'text-white' : 'text-teal-400',
                                 'absolute inset-y-0 right-0 flex items-center pr-4',
                               )}
                             >
@@ -105,9 +112,9 @@ export default function Select<TType>({
                           ) : null}
                         </>
                       )}
-                    </Listbox.Option>
+                    </ListboxOption>
                   ))}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </>

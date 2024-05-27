@@ -1,18 +1,16 @@
-import { LockClosedIcon } from '@heroicons/react/outline';
+import { LockClosedIcon } from '@heroicons/react/24/outline';
 import cookie from 'cookie';
-import { NextSeo } from 'next-seo';
 import NextImage from 'next/image';
+import Link from 'next/link';
+import { NextSeo } from 'next-seo';
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { useUI } from '@components/context';
-import { Button, Link } from '@components/ui';
-
+import { Button } from '@components/ui';
 import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
-
 import { useSession } from '@lib/hooks/use-session';
 import { signinWithEmail, SigninWithEmailProps } from '@lib/signin-with-email';
-
 import { isBrowser } from '@utils/is-browser';
 
 export function useEmail() {

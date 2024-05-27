@@ -1,5 +1,5 @@
-import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import { useState } from 'react';
 import useSWR from 'swr';
 
@@ -7,12 +7,11 @@ import { useUI } from '@components/context';
 import { Loading, UserSelect } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Button } from '@components/ui';
-
 import { createRoom } from '@lib/create-room';
 import { useSession } from '@lib/hooks/use-session';
 import { compareId } from '@lib/server/compare-id';
 
-import { UserInfo } from 'types/user';
+import type { UserInfo } from 'types/user';
 
 interface UserInfoClient extends UserInfo {
   _id: string;

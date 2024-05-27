@@ -1,9 +1,7 @@
 import NextLink from 'next/link';
 
 import { Button } from '@components/ui';
-
 import { COOKIE_KEY_REDIRECT_URL } from '@defines/cookie';
-
 import { useSession } from '@lib/hooks/use-session';
 
 export default function IndexPage() {
@@ -21,7 +19,7 @@ export default function IndexPage() {
         </a>
       </p>
       <div className="mt-4 sm:mt-6 lg:mt-12">
-        <NextLink href="/signin" passHref>
+        <NextLink href="/signin" passHref legacyBehavior>
           <Button
             as="a"
             type="link"

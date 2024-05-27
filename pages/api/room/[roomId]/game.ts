@@ -2,18 +2,15 @@ import { ValidationError } from 'joi';
 import { ObjectId } from 'mongodb';
 
 import { createError } from '@defines/errors';
-
-import type { AddNewGameProps } from '@lib/add-new-game';
 import { isValidId } from '@lib/is-valid-id';
 import { verifySession } from '@lib/server/verify-session';
-
 import { getGamesByRoomId } from '@utils/game';
 import { connectMongo } from '@utils/mongodb/connect';
 import { getRoomByQuery } from '@utils/room';
 import { withErrorHandler } from '@utils/with-error-handler';
-
 import { gameSchema, Game } from 'types/game';
 
+import type { AddNewGameProps } from '@lib/add-new-game';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -47,19 +44,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       (type === '5M' && providedIds.length !== 5) ||
       (type === '6M' && providedIds.length !== 6)
     ) {
-      throw new ValidationError('Duplicate ids are not allowed', '', '');
+      throw new ValidationError('Duplicate ids are not allowed', [], '');
     }
 
     // check userIds validity.
     const participantIds = room.participants.map((user) => String(user._id));
     for (const userId of providedIds) {
       if (!isValidId(userId) || !participantIds.includes(userId))
-        throw new ValidationError(`Invalid id: ${userId}`, '', '');
+        throw new ValidationError(`Invalid id: ${userId}`, [], '');
     }
 
     const { db } = await connectMongo();
 
     const { insertedId } = await db.collection<Game>('game').insertOne({
+      _id: new ObjectId(),
       _roomId: room._id,
       type,
       isNogi,
