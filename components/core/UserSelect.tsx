@@ -24,7 +24,7 @@ export default function UserSelect({ className, user, selected, onSelect }: User
       onClick={onSelect}
     >
       <div className="flex-shrink-0">
-        <Avatar src={user.profileUrl} size="base" />
+        <Avatar src={user.profileUrl} size="base" nickname={user.displayName} />
       </div>
       <div className="flex-1 min-w-0">
         {/* <span className="absolute inset-0" aria-hidden="true" /> */}

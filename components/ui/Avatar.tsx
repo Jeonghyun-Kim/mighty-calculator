@@ -7,10 +7,12 @@ interface AvatarProps {
   className?: string;
   src?: string | null;
   size?: (typeof AVATAR_SIZES)[number];
-  alt?: string;
+  nickname?: string;
 }
 
-export default function Avatar({ className, src, size = 'base', alt = '' }: AvatarProps) {
+export default function Avatar({ className, src, size = 'base', nickname }: AvatarProps) {
+  const useDefaultAvatar = !src && !nickname;
+
   return (
     <span
       className={cn(
@@ -23,7 +25,15 @@ export default function Avatar({ className, src, size = 'base', alt = '' }: Avat
         },
       )}
     >
-      <img className="object-cover" src={src ?? '/assets/avatar.png'} alt={alt} />
+      <img
+        className="object-cover"
+        src={
+          useDefaultAvatar
+            ? '/assets/avatar.png'
+            : src ?? `https://ui-avatars.com/api/?name=${nickname?.split(' ').join('+')}`
+        }
+        alt={nickname}
+      />
     </span>
   );
 }

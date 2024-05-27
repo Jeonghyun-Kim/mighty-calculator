@@ -78,7 +78,9 @@ export default function ProfilePage() {
       // );
 
       const { url, fields, key } = await fetcher
-        .get('/api/aws/presigned-post', { searchParams: { ext: file.name.split('.')[1] } })
+        .get('/api/aws/presigned-post', {
+          searchParams: { ext: file.name.split('.')[1].toLowerCase() },
+        })
         .json<{ url: string; fields: { [key: string]: string }; key: string }>();
 
       const formData = new FormData();

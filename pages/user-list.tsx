@@ -65,7 +65,7 @@ export default function UserListPage() {
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <Avatar size="sm" src={profileUrl} />
+                            <Avatar size="sm" src={profileUrl} nickname={displayName} />
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">

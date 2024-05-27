@@ -251,7 +251,7 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
           <h6 className="font-medium">Dealer</h6>
           <div className="flex justify-between items-center">
             <div className="mt-1 flex items-center p-2">
-              <Avatar src={room.dealer.profileUrl} />
+              <Avatar src={room.dealer.profileUrl} nickname={room.dealer.displayName} />
               <div className="ml-2">
                 <p className="text-gray-700 font-semibold">{room.dealer.displayName}</p>
                 <p className="text-gray-500 text-sm">{room.dealer.name}</p>
@@ -390,7 +390,11 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             <td className="px-4 py-4 whitespace-nowrap">
                               <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
                                 <div>
-                                  <Avatar size="sm" src={player.profileUrl} />
+                                  <Avatar
+                                    size="sm"
+                                    src={player.profileUrl}
+                                    nickname={player.displayName}
+                                  />
                                 </div>
                                 <div className="ml-4 hidden sm:block md:hidden lg:block">
                                   <div className="text-sm font-medium text-gray-900">
@@ -744,7 +748,11 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                             <tr key={game._id as string}>
                               <td className="px-4 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
-                                  <Avatar size="sm" src={president.profileUrl} />
+                                  <Avatar
+                                    size="sm"
+                                    src={president.profileUrl}
+                                    nickname={president.displayName}
+                                  />
                                   <div className="ml-4 hidden sm:block md:hidden lg:block">
                                     <div className="text-sm font-medium text-gray-900">
                                       {president.displayName}
@@ -755,7 +763,11 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
-                                  <Avatar size="sm" src={friend.profileUrl} />
+                                  <Avatar
+                                    size="sm"
+                                    src={friend.profileUrl}
+                                    nickname={friend.displayName}
+                                  />
                                   <div className="ml-4 hidden sm:block md:hidden lg:block">
                                     <div className="text-sm font-medium text-gray-900">
                                       {friend.displayName}
@@ -767,7 +779,11 @@ export default function RoomDetailsPage({ roomId }: PageProps) {
                               {gameType === '6M' && (
                                 <td className="px-4 py-4 whitespace-nowrap">
                                   <div className="flex items-center justify-center sm:justify-start md:justify-center lg:justify-start">
-                                    <Avatar size="sm" src={died.profileUrl} />
+                                    <Avatar
+                                      size="sm"
+                                      src={died.profileUrl}
+                                      nickname={died.displayName}
+                                    />
                                     <div className="ml-4 hidden sm:block md:hidden lg:block">
                                       <div className="text-sm font-medium text-gray-900">
                                         {died.displayName}

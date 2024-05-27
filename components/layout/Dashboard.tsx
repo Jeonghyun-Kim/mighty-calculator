@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   onClick={() => setSidebarOpen(false)}
                 >
                   <div className="flex items-center">
-                    <Avatar src={user?.profileUrl} />
+                    <Avatar src={user?.profileUrl} nickname={user?.displayName} />
                     <div className="ml-3">
                       <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">
                         {(user?.displayName || user?.name) ?? 'Loading...'}
@@ -212,7 +212,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setSidebarOpen(false)}
               >
                 <div className="flex items-center">
-                  <Avatar src={user?.profileUrl} />
+                  <Avatar src={user?.profileUrl} nickname={user?.displayName} />
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
                       {(user?.displayName || user?.name) ?? 'Loading...'}

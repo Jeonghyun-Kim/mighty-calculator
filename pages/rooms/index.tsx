@@ -93,7 +93,12 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
         <div>
           <p className="mt-4 text-gray-500 text-sm">Dealer</p>
           <div className="mt-2 text-gray-500 text-sm font-semibold flex items-center">
-            <Avatar className="inline-block mr-2" size="sm" src={room.dealer.profileUrl} />
+            <Avatar
+              className="inline-block mr-2"
+              size="sm"
+              src={room.dealer.profileUrl}
+              nickname={room.dealer.displayName}
+            />
             <p className="ml-1">
               {room.dealer.displayName} ({room.dealer.name})
             </p>
