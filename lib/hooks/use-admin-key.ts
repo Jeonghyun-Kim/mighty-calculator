@@ -1,13 +1,9 @@
-import { useEffect } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
+import { useEffect, useState } from 'react';
 
 const ADMIN_KEY = '@adminKey' as const;
 
-export function useAdminKey(): [string | null, KeyedMutator<string | null>] {
-  const { data: adminKey, mutate: setAdminKey } = useSWR<string | null>(ADMIN_KEY, {
-    fallbackData: null,
-    fetcher: undefined,
-  });
+export function useAdminKey() {
+  const [adminKey, setAdminKey] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(ADMIN_KEY);
@@ -23,5 +19,5 @@ export function useAdminKey(): [string | null, KeyedMutator<string | null>] {
     }
   }, [adminKey]);
 
-  return [adminKey as never, setAdminKey];
+  return [adminKey, setAdminKey] as const;
 }

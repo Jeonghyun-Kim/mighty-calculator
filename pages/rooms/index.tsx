@@ -1,8 +1,10 @@
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import cn from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
@@ -10,20 +12,37 @@ import { useUI } from '@components/context';
 import { Loading, Title } from '@components/core';
 import { DashboardLayout } from '@components/layout';
 import { Avatar, Button, Toggle } from '@components/ui';
+import { approveRoomById } from '@lib/approve-room-by-id';
 import { closeRoomById } from '@lib/close-room-by-id';
+import { deleteRoomById } from '@lib/delete-room-by-id';
+import { useAdminKey } from '@lib/hooks/use-admin-key';
 import { useSession } from '@lib/hooks/use-session';
 import { isParticipant } from '@lib/is-participant';
 import { momentDate } from '@utils/moment';
 
 import type { Room } from 'types/room';
 
-function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
+function RoomListItem({
+  room,
+  joined,
+  adminKey,
+  revalidate,
+}: {
+  room: Room;
+  joined: boolean;
+  adminKey?: string | null;
+  revalidate?: () => void;
+}) {
   const router = useRouter();
   const { user } = useSession();
 
   const isOpen = useMemo(() => room.state === 'inProgress', [room.state]);
 
   const { showModal, showNoti } = useUI();
+
+  useEffect(() => {
+    console.log('adminKey', adminKey);
+  }, [adminKey]);
 
   const handleCloseRoomClicked = useCallback(() => {
     if (!user) return;
@@ -64,9 +83,15 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
       )}
     >
       <div className="flex justify-between items-end">
-        <span className="text-sm text-gray-500">
-          started {momentDate(room.createdAt).fromNow()}
-        </span>
+        {room.state === 'inProgress' ? (
+          <span className="text-sm text-gray-500">
+            started {momentDate(room.createdAt).fromNow()}
+          </span>
+        ) : (
+          <span className="text-sm text-gray-500">
+            ended {momentDate(room.updatedAt).fromNow()}
+          </span>
+        )}
         <span
           className={cn('flex items-center space-x-2', isOpen ? 'text-teal-500' : 'text-red-500')}
         >
@@ -83,6 +108,36 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
               )}
             />
           </button>
+          {adminKey && room.state === 'ended' && !room.approvedAt ? (
+            <button
+              className="inline-flex hover:opacity-70"
+              onClick={() => {
+                console.log('approve', room._id);
+                approveRoomById({ adminKey, roomId: room._id as string })
+                  .then(() => {
+                    showNoti({ title: `Room ${room.title} has been Successfully approved.` });
+                  })
+                  .then(() => revalidate && revalidate());
+              }}
+            >
+              <CheckCircleIcon className="w-6 h-6 text-green-500" />
+            </button>
+          ) : null}
+          {adminKey && room.state === 'ended' ? (
+            <button
+              className="inline-flex hover:opacity-70"
+              onClick={() => {
+                console.log('delete', room._id);
+                deleteRoomById({ adminKey, roomId: room._id as string })
+                  .then(() => {
+                    showNoti({ title: `Room ${room.title} has been Successfully deleted.` });
+                  })
+                  .then(() => revalidate && revalidate());
+              }}
+            >
+              <XMarkIcon className="w-6 h-6 text-gray-500" />
+            </button>
+          ) : null}
         </span>
       </div>
       <div className="mt-2 flex justify-between items-end">
@@ -118,13 +173,12 @@ function RoomListItem({ room, joined }: { room: Room; joined: boolean }) {
   );
 }
 
-export default function UserListPage() {
-  const { data, size, setSize } = useSWRInfinite<{ rooms: Room[]; roomCount: number }>(
+export default function RoomListPage() {
+  const { data, size, setSize, mutate } = useSWRInfinite<{ rooms: Room[]; roomCount: number }>(
     (index) => `/api/room?limit=${index}`,
-    {
-      revalidateFirstPage: false,
-    },
   );
+
+  const [adminKey] = useAdminKey();
 
   const { user } = useSession();
   const [joinedOnly, setJoinedOnly] = useState(false);
@@ -189,6 +243,8 @@ export default function UserListPage() {
                   key={`room-${room._id}`}
                   room={room}
                   joined={!!user?._id && isParticipant(user._id, room)}
+                  adminKey={adminKey}
+                  revalidate={() => mutate()}
                 />
               ))}
           </div>
@@ -202,6 +258,8 @@ export default function UserListPage() {
                 key={`room-${room._id}`}
                 room={room}
                 joined={!!user?._id && isParticipant(user._id, room)}
+                adminKey={adminKey}
+                revalidate={() => mutate()}
               />
             ))}
           </div>
@@ -224,4 +282,4 @@ export default function UserListPage() {
   );
 }
 
-UserListPage.Layout = DashboardLayout;
+RoomListPage.Layout = DashboardLayout;

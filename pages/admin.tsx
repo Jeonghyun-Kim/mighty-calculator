@@ -122,17 +122,9 @@ export default function AdminPage() {
       setLoadingFlags((prev) => ({ ...prev, roomApprove: true }));
       approveRoomById({ adminKey, roomId })
         .then(() => {
-          showModal({
+          showNoti({
             title: 'Room Approved.',
             content: `Room ${title} has been Successfully approved.`,
-            actionButton: {
-              label: 'Back to Dashboard',
-              onClick: () => router.push('/dashboard'),
-            },
-            cancelButton: {
-              label: 'Stay',
-              onClick: () => {},
-            },
           });
         })
         .then(() => fetchRoomList(adminKey))
@@ -144,7 +136,7 @@ export default function AdminPage() {
           setLoadingFlags((prev) => ({ ...prev, roomApprove: false }));
         });
     },
-    [alertNoti, showModal, setStoredAdminKey, router, fetchRoomList],
+    [alertNoti, showNoti, setStoredAdminKey, fetchRoomList],
   );
 
   const handleDeleteRoomById = useCallback(
