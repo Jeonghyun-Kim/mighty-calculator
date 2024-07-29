@@ -123,7 +123,7 @@ function RoomListItem({
               <CheckCircleIcon className="w-6 h-6 text-green-500" />
             </button>
           ) : null}
-          {adminKey && room.state === 'ended' ? (
+          {adminKey && room.state === 'ended' && !room.approvedAt ? (
             <button
               className="inline-flex hover:opacity-70"
               onClick={() => {
