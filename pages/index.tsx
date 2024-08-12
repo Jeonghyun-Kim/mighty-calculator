@@ -14,7 +14,10 @@ export default function IndexPage() {
       </h1>
       <p className="mt-4">
         Made by{' '}
-        <a className="text-blue-500 underline hover:opacity-70" href="mailto:kim.kay@kakao.com">
+        <a
+          className="text-blue-500 underline hover:opacity-70"
+          href="mailto:jeonghyunkay@gmail.com"
+        >
           Kay Kim
         </a>
       </p>
